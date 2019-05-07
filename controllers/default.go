@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/proj_LP/models"
+	"github.com/yuriserka/lpzin/models"
 )
 
 type MainController struct {
