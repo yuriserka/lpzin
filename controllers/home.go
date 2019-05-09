@@ -8,7 +8,13 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	t := template.Must(template.ParseFiles("./static/views/xotomate.html"))
+	var err error
+	temp, err := template.ParseFiles("./static/views/xotomate.html")
+	if err != nil {
+		panic(err)
+	}
+
+	t := template.Must(temp, err)
 	t.Execute(w, struct {
 		Nome     string
 		Idade    int
@@ -21,7 +27,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("./static/views/index.html"))
+	var err error
+	temp, err := template.ParseFiles("./static/views/index.html")
+	if err != nil {
+		panic(err)
+	}
+
+	tmpl := template.Must(temp, err)
 	formatedHour := func(t time.Time) string {
 		var h, m string
 		if t.Hour() < 10 {
@@ -36,5 +48,9 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return h + ":" + m
 	}
-	tmpl.Execute(w, formatedHour(time.Now()))
+	err = tmpl.Execute(w, formatedHour(time.Now()))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
 }
