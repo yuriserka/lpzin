@@ -9,7 +9,7 @@ import (
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	temp, err := template.ParseFiles("./static/views/xotomate.html")
+	temp, err := template.ParseFiles("./views/xotomate.html")
 	if err != nil {
 		panic(err)
 	}
@@ -26,9 +26,23 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func NovaHandler(w http.ResponseWriter, r *http.Request) {
+	var err error
+	temp, err := template.ParseFiles("./views/nova.html")
+	if err != nil {
+		panic(err)
+	}
+
+	t := template.Must(temp, err)
+	err = t.Execute(w, nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func MainHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	temp, err := template.ParseFiles("./static/views/index.html")
+	temp, err := template.ParseFiles("./views/index.html")
 	if err != nil {
 		panic(err)
 	}

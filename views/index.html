@@ -5,13 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../static/css/index.css">
     <title>ZapZap</title>
 </head>
 
 <body class="main">
     <div id="profile_pic_container" class="prof-pic">
-        <img src="img/mario.png" class="pic">
+        <!--
+            aparentemente só precisa referenciar o path relativo no head,
+            no body usa o path como se tivesse no static
+            (?????? => ver com calma dps)
+        -->
+        <img src="./img/mario.png" class="pic">
     </div>
     <div class="sidenav">
         <i>
