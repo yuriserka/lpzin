@@ -1,37 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<!--index.html-->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../static/css/index.css">
-    <title>ZapZap</title>
-</head>
+<!--Embed the header.html template at this location-->
+{{ template "header.html" .}}
 
-<body class="main">
-    <div id="profile_pic_container" class="prof-pic">
-        <!--
-            aparentemente só precisa referenciar o path relativo no head,
-            no body usa o path como se tivesse no static
-            (?????? => ver com calma dps)
-        -->
-        <img src="./img/mario.png" class="pic">
-    </div>
-    <div class="sidenav">
-        <i>
-            <font color="blue">hora agora: {{.}}<span id="time"></span> </font>
-        </i>
-        <a href="/lindo">Teste</a>
-    </div>
-    <h1>FirstName LastName</h1>
-    <p>I'm learning to code on Codecademy! My goals include:</p>
-    <ul>
-        <li>Learn to code</li>
-        <li>Start a company</li>
-        <li>Help the world</li>
-        <li>Ser menos cornokkkkk</li>
-    </ul>
-</body>
+{{ template "sidebar.html" .}}
 
-</html>
+<!--Embed the footer.html template at this location-->
+{{ template "footer.html" .}}
