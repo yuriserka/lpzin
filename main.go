@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-gonic/contrib/static"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,19 +17,13 @@ type usuario struct {
 func main() {
 	db := make(map[int]usuario)
 	contador := 0
-	// router := gin.Default()
-
-	// router.Use(static.Serve("/", static.LocalFile("./cliente/build", true)))
-	// api := router.Group("/api")
-	// {
-	// 	api.GET("/", func(c *gin.Context) {
-	// 		c.JSON(http.StatusOK, gin.H{
-	// 			"message": "pong",
-	// 		})
-	// 	})
-	// }
 
 	router := gin.Default()
+	router.Use(static.Serve("/", static.LocalFile("./lpzin_frontend/build", true)))
+
+	router.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
 
 	router.POST("/teste", func(c *gin.Context) {
 		usr := usuario{
@@ -47,7 +43,6 @@ func main() {
 			c.Data(http.StatusOK, "text", []byte(v.Nick+"\n"))
 		}
 	})
-	router.Run(":8080")
 
-	// router.Run()
+	router.Run(":8080")
 }
