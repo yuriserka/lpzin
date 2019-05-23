@@ -2,9 +2,10 @@
 
 Pra rodar primeiro tem que clonar o repo e executar:
 
-### `git submodule update --recursive --remote`
-### `cd ./lpzin_frontend`
+### `cd ./front`
 ### `npm install`
+### `yarn`
+### `yarn build`
 
 isso fará com que instale as dependencia pro front funcionar
 
