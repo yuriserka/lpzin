@@ -6,11 +6,11 @@ class MsgBox extends React.Component {
   render() {
     return (
       <BoxMsgDiv>
-        <FormStyle action="/teste" method="post">
+        <FormStyle method="post">
             Nickname: <InputMsg type="text" name="nick" autoComplete="off" />
           { /* eslint-disable-next-line max-len */ }
             Digite uma mensagem: <InputMsg type="text" name="message" autoComplete="off" />
-          <InputMsg type="submit" value="Login" />
+          <InputMsg type="submit" />
         </FormStyle>
       </BoxMsgDiv>
     );

@@ -6,12 +6,8 @@ type Usuario struct {
 	Msg  string `json:"message"`
 }
 
-var (
-	Db       map[int]Usuario
-	Contador int
-)
-
-func init() {
-	Db = make(map[int]Usuario)
-	Contador = 0
+var Usuarios = []Usuario{
+	Usuario{ID: 0, Nick: "Usr_0", Msg: "ola mundo0"},
+	Usuario{ID: 1, Nick: "Usr_1", Msg: "ola mundo1"},
+	Usuario{ID: 2, Nick: "Usr_2", Msg: "ola mundo2"},
 }

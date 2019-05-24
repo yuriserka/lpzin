@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 const BoxMsgDiv = styled.div`
-    margin-top: 100px;
-    width: 100%;
-    height: 100px;
+    width: 100px;
+    height: 200px;
     color: black;
     background: red;
 `;

@@ -1,12 +1,13 @@
-import React from 'react'
-import SidebarDiv from './styles'
+/* eslint-disable require-jsdoc */
+import React from 'react';
+import SidebarDiv from './styles';
 
 class SideBar extends React.Component {
-    render() {
-        return (
-            <SidebarDiv/>
-        );
-    }
+  render() {
+    return (
+      <SidebarDiv/>
+    );
+  }
 }
 
 export default SideBar;

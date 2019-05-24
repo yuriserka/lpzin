@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
 const PageStyle = styled.div `
-  background: whitesmoke;
   height: 650px;
   max-width: 1010px;
-  min-widrh: 300px;
+  min-width: 300px;
   display: block;
   border-bottom: 0;
   border-radius: 0;

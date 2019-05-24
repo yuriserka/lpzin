@@ -1,9 +1,7 @@
 package routers
 
 import (
-	"net/http"
-
-	"github.com/yuriserka/lpzin/api/models"
+	"github.com/yuriserka/lpzin/api/controllers"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -15,28 +13,11 @@ func init() {
 	router = gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./front/build", true)))
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", nil)
-	})
+	router.GET("/", controllers.GetHomePage)
 
-	router.POST("/teste", func(c *gin.Context) {
-		usr := models.Usuario{
-			ID:   models.Contador,
-			Nick: c.PostForm("nick"),
-			Msg:  c.PostForm("message"),
-		}
-		models.Db[usr.ID] = usr
-		models.Contador++
-		c.JSON(http.StatusOK, gin.H{
-			"usuario": usr,
-		})
-	})
-
-	router.GET("/teste", func(c *gin.Context) {
-		for _, v := range models.Db {
-			c.Data(http.StatusOK, "text", []byte(v.Nick+"\n"))
-		}
-	})
+	router.POST("/usuarios", controllers.PostUsers)
+	router.GET("/usuarios", controllers.GetUsers)
+	router.GET("/usuarios/:userID", controllers.ViewUser)
 }
 
 func Run() {
