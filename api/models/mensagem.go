@@ -1,6 +1,6 @@
 package models
 
 type Mensagem struct {
-	Autor    string `json:"autor"`
+	Autor    int    `json:"autorID"`
 	Conteudo string `json:"conteudo"`
 }

@@ -8,11 +8,6 @@ import (
 	"github.com/yuriserka/lpzin/api/models"
 )
 
-func GetHomePage(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-	render(c, nil, "index.html")
-}
-
 func PostUsers(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, gin.H{
@@ -20,12 +15,12 @@ func PostUsers(c *gin.Context) {
 	})
 }
 
-func GetUsers(c *gin.Context) {
+func GetAllUsers(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	c.JSON(http.StatusOK, models.Usuarios)
 }
 
-func ViewUser(c *gin.Context) {
+func GetUser(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	if userID, err := strconv.Atoi(c.Param("userID")); err == nil {
 		for _, v := range models.Usuarios {

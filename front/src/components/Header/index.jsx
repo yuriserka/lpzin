@@ -13,12 +13,6 @@ class Logo extends React.Component {
 }
 
 class Main extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setState({
-      'hover': false,
-    });
-  }
   render() {
     return (
       <MainHDiv>

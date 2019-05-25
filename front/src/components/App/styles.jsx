@@ -15,4 +15,4 @@ const PageStyle = styled.div `
   overflow: hidden;
 `;
 
-export default PageStyle;
+export {PageStyle};
