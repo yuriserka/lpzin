@@ -25,14 +25,4 @@ const SearchTerm = styled.input`
     color: black;
 `;
 
-// const SearchButton = styled.form`
-//     width: 36px;
-//     height: 32px;
-//     border: 1px solid #00B4CC;
-//     background: #921840;
-//     color: #fff;
-//     border-radius: 0 5px 5px 0;
-//     cursor: pointer;
-// `;
-
 export {SearchWrap, SearchBox, SearchTerm};

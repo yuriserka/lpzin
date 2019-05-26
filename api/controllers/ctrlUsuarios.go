@@ -26,6 +26,7 @@ func GetUser(c *gin.Context) {
 		for _, v := range models.Usuarios {
 			if v.ID == userID {
 				c.JSON(http.StatusOK, &v)
+				break
 			}
 		}
 	} else {

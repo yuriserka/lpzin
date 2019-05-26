@@ -29,4 +29,7 @@ func userRoutes() {
 	router.POST("/usuarios", controllers.PostUsers)
 	router.GET("/usuarios", controllers.GetAllUsers)
 	router.GET("/usuarios/:userID", controllers.GetUser)
+	router.POST("/chat", controllers.PostChat)
+	router.GET("/chat/:chatID", controllers.GetChat)
+	router.POST("/chat/:chatID", controllers.PostInChat)
 }

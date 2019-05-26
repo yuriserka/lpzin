@@ -57,8 +57,7 @@ class SideBar extends React.Component {
         <SidebarDiv>
           <BarraPesquisa value={this.digitando}/>
           <div style={{marginTop: '50px'}}>
-            <ConversasDivStyle>
-              {/* <Imagem userID={4} /> */}
+            <ConversasDivStyle> {/* copiar pra msg*/}
               {usuarios.map((user) => (
                 <ConversaDiv key={user.id}>
                   <Imagem userID={user.id} />

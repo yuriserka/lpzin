@@ -8,4 +8,4 @@ const PainelConversaDiv = styled.div`
     position: relative;
 `;
 
-export default PainelConversaDiv;
+export {PainelConversaDiv};
