@@ -43,7 +43,8 @@ class BarraPesquisa extends React.Component {
         <SearchWrap>
           <SearchBox method="get">
             <SearchTerm type="text" placeholder="Pesquisar"
-              value={this.state.value} onChange={this.handleChange} result={pesquisados} />
+              value={this.state.value} onChange={this.handleChange}
+              result={pesquisados} />
           </SearchBox>
         </SearchWrap>
       );
