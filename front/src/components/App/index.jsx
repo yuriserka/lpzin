@@ -2,7 +2,6 @@
 import React from 'react';
 import Header from '../Header/index';
 import SideBar from '../Sidebar/index';
-// import Mensagem from '../Message/index';
 import {PageStyle} from './styles.jsx';
 import PainelConversa from '../PainelConversa';
 
@@ -12,7 +11,7 @@ class App extends React.Component {
       <PageStyle>
         <Header />
         <SideBar />
-        <PainelConversa />
+        <PainelConversa roomID="0" userID="0"/>
       </PageStyle>
     );
   }
