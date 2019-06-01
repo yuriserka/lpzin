@@ -1,7 +1,10 @@
 package routers
 
 import (
+	"fmt"
+
 	"github.com/yuriserka/lpzin/api/controllers"
+	"github.com/yuriserka/lpzin/api/utils"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -12,6 +15,12 @@ var router *gin.Engine
 func init() {
 	router = gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./front/build", true)))
+
+	conn, err := utils.ConnDB()
+	if err != nil {
+		panic(fmt.Sprintf("db: %v", err))
+	}
+	defer conn.Close()
 
 	homeRoutes()
 	userRoutes()

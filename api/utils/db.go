@@ -22,7 +22,7 @@ const (
 
 //CreateConnString Prepara as informações para passar para a função que conecta o banco de dados
 func CreateConnString(host string, port int, user string, password string, dbname string) string {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s"+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 	return psqlInfo
