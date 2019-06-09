@@ -1,17 +1,27 @@
 import styled from 'styled-components';
 
-const PainelEnviarMensagem = styled.form`
+const PainelEnviarMensagem = styled.div`
     display: flex;
     flex-direction: row;
-    max-width: 100%;
-    min-height: 62px;
+    width: 51%;
+    height: 60px;
     position: relative;
-    z-index: 2;
+    z-index: 1;
+    position: fixed;
+    bottom: 9px;
+`;
+
+const PainelDigitarMensagem = styled.div`
+    background: whitesmoke;
+    width: 100%;
+    padding: 10px 20px;
 `;
 
 const InputMensagem = styled.input`
-    line-height: 20px;
+    outline: none;
     width: 100%;
+    border-radius: 10px;
+    height: 36px;
 `;
 
-export {PainelEnviarMensagem, InputMensagem};
+export {PainelEnviarMensagem, InputMensagem, PainelDigitarMensagem};

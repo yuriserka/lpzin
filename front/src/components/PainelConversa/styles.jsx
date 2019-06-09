@@ -6,7 +6,6 @@ const PainelConversaDiv = styled.div`
     height: 100%;
     width: 69%;
     float: left;
-    position: relative;
     background-image: url(${bg});
 `;
 

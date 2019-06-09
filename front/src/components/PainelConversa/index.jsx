@@ -1,22 +1,20 @@
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import {PainelConversaDiv} from './styles';
-import ConversaHeader from './ConversaHeader';
-import Mensagens from './Mensagens';
-import CaixaEnvioMensagem from './CaixaDeEnvio';
+import ConversaHeader from './ConversaHeader/index';
+import Mensagens from './Mensagens/index';
+import CaixaEnvioMensagem from './CaixaDeEnvio/index';
 
 class PainelConversa extends React.Component {
   render() {
     return (
-      <span>
+      <div>
         <ConversaHeader/>
         <PainelConversaDiv>
-          <div>
-            <Mensagens roomID={this.props.roomID} />
-          </div>
+          <Mensagens roomID={this.props.roomID} />
           <CaixaEnvioMensagem roomID={this.props.roomID} userID={this.props.userID} />
         </PainelConversaDiv>
-      </span>
+      </div>
     );
   }
 }

@@ -61,7 +61,7 @@ class SideBar extends React.Component {
               {usuarios.map((user) => (
                 <ConversaDiv key={user.id}>
                   <Imagem userID={user.id} />
-                  {user.nome} enviou {user.mensagem.conteudo}
+                  {user.nome} enviou fake_msg_{user.id}
                   <SeparadorConversa />
                 </ConversaDiv>
               ))}
