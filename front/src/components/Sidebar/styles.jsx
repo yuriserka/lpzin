@@ -15,7 +15,7 @@ const ConversasDivStyle = styled.div`
 
 const ConversaDiv = styled.div`
   &:hover {
-    background: whitesmoke;
+    background: lightgray;
   }
 `;
 

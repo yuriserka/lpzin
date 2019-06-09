@@ -2,9 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"strconv"
-
-	"github.com/yuriserka/lpzin/api/repositories"
 
 	"github.com/yuriserka/lpzin/api/controllers"
 	"github.com/yuriserka/lpzin/api/utils"
@@ -25,14 +22,18 @@ func init() {
 	}
 	defer db.Close()
 
-	r := repositories.RepUser{}
-	r.Init(db)
-	id := r.SetUser("Yuri Serka", "foto de umgadokkk")
-	user := r.GetUser(strconv.Itoa(id))
-	fmt.Println(user)
+	// Dar um jeito de fazer uma controladora para criar as tabelas antes da aplicação começar.
+	// pode-se fazer até mesmo no ctrlHome se pá.
+
+	// r := repositories.RepUser{}
+	// r.Init(db)
+	// id := r.SetUser("Yuri Serka", "foto de umgadokkk")
+	// user := r.GetUser(strconv.Itoa(id))
+	// fmt.Println(user)
 
 	homeRoutes()
 	userRoutes()
+	chatRoutes()
 }
 
 func Run() {
@@ -47,7 +48,10 @@ func userRoutes() {
 	router.POST("/usuarios", controllers.PostUsers)
 	router.GET("/usuarios", controllers.GetAllUsers)
 	router.GET("/usuarios/:userID", controllers.GetUser)
+}
+
+func chatRoutes() {
 	router.POST("/chat", controllers.PostChat)
-	router.GET("/chat/:chatID", controllers.GetChat)
 	router.POST("/chat/:chatID", controllers.PostInChat)
+	router.GET("/chat/:chatID", controllers.GetChat)
 }

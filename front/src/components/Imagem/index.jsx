@@ -1,7 +1,8 @@
-/* eslint-disable require-jsdoc */
+
 import React from 'react';
 import {ImagemWrap} from './styles';
 import Axios from 'axios';
+import PropTypes from 'prop-types';
 
 class Imagem extends React.Component {
   constructor(props) {
@@ -11,7 +12,9 @@ class Imagem extends React.Component {
       user: {},
       userID: props.userID,
     };
+
     this.serverRequest.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   serverRequest() {
@@ -49,5 +52,9 @@ class Imagem extends React.Component {
     }
   }
 }
+
+Imagem.propTypes = {
+  userID: PropTypes.string,
+};
 
 export default Imagem;

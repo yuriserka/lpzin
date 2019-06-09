@@ -1,7 +1,9 @@
-/* eslint-disable require-jsdoc */
+
 import React from 'react';
 import Axios from 'axios';
-import {PainelEnviarMensagem, InputMensagem, PainelDigitarMensagem} from './styles';
+import {PainelEnviarMensagem, InputMensagem,
+  PainelDigitarMensagem} from './styles';
+import PropTypes from 'prop-types';
 
 class CaixaEnvioMensagem extends React.Component {
   constructor(props) {
@@ -11,6 +13,9 @@ class CaixaEnvioMensagem extends React.Component {
       error: null,
       contadorMsgs: 0,
     };
+    
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.getCurrentTime = this.getCurrentTime.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -75,5 +80,10 @@ class CaixaEnvioMensagem extends React.Component {
     }
   }
 }
+
+CaixaEnvioMensagem.propTypes = {
+  roomID: PropTypes.string,
+  userID: PropTypes.string,
+};
 
 export default CaixaEnvioMensagem;

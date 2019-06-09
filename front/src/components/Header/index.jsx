@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 import React from 'react';
 import {MenuDiv} from './styles.jsx';
 import Logo from './Logo/index';

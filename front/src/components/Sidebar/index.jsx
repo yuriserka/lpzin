@@ -1,4 +1,4 @@
-/* eslint-disable require-jsdoc */
+
 import React from 'react';
 import Axios from 'axios';
 import {
@@ -16,9 +16,9 @@ class SideBar extends React.Component {
     this.state = {
       error: null,
       usuarios: [],
-      pesquisando: '',
     };
-    this.digitando.bind(this);
+    this.serverRequest = this.serverRequest.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   serverRequest() {
@@ -27,13 +27,11 @@ class SideBar extends React.Component {
             (result) => {
               // console.log(result.data);
               this.setState({
-                isLoaded: true,
                 usuarios: result.data,
               });
             },
             (error) => {
               this.setState({
-                isLoaded: true,
                 error,
               });
             }
@@ -44,10 +42,6 @@ class SideBar extends React.Component {
     this.serverRequest();
   }
 
-  digitando(texto) {
-    console.log(texto);
-  }
-
   render() {
     const {error, usuarios} = this.state;
     if (error) {
@@ -55,16 +49,18 @@ class SideBar extends React.Component {
     } else {
       return (
         <SidebarDiv>
-          <BarraPesquisa value={this.digitando}/>
+          <BarraPesquisa/>
           <div style={{marginTop: '50px'}}>
-            <ConversasDivStyle> {/* copiar pra msg*/}
-              {usuarios.map((user) => (
-                <ConversaDiv key={user.id}>
-                  <Imagem userID={user.id} />
-                  {user.nome} enviou fake_msg_{user.id}
-                  <SeparadorConversa />
-                </ConversaDiv>
-              ))}
+            <ConversasDivStyle>
+              {
+                usuarios.map((user) => (
+                  <ConversaDiv key={user.id}>
+                    <Imagem userID={user.id} />
+                    {user.nome} enviou fake_msg_{user.id}
+                    <SeparadorConversa />
+                  </ConversaDiv>
+                ))
+              }
             </ConversasDivStyle>
           </div>
         </SidebarDiv>

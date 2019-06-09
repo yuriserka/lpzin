@@ -1,4 +1,3 @@
-/* eslint-disable require-jsdoc */
 import React from 'react';
 import Header from '../Header/index';
 import SideBar from '../Sidebar/index';
