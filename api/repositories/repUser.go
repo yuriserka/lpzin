@@ -3,8 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"log"
-
-	"github.com/yuriserka/lpzin/api/models"
 )
 
 type RepUser struct {
@@ -26,6 +24,6 @@ func (rep *RepUser) SetUser(nome string, foto string) {
 	}
 }
 
-func (rep *RepUser) GetUser(userid string) (models.Usuario, error) {
-	sqlStatement := `SELECT id, `
-}
+// func (rep *RepUser) GetUser(userid string) (models.Usuario, error) {
+// 	sqlStatement := `SELECT id, `
+// }

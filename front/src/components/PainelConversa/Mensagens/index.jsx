@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import Axios from 'axios';
-import {MensagemDiv} from './styles';
+import {MensagemDiv, Sender, MessageContent, GlobalStyles} from './styles';
 
 class Mensagens extends React.Component {
   constructor(props) {
@@ -40,29 +40,27 @@ class Mensagens extends React.Component {
       return <div>Error: {error.message}</div>;
     } else {
       return (
-        <footer>
-          <div >
-            contador de mensagens: {mensagens.length}
-            {
-              mensagens.map((msg) => (
-                <MensagemDiv key={msg.msgID}>
-                  <div>
-                    <span style={{color: 'blue'}}>
-                      usr:
-                    </span>
-                    {msg.autorID}
-                  </div>
-                  <div>
-                    <span style={{color: 'red'}}>
+        <div style={{height: '545px', overflow: 'auto'}}>
+          <GlobalStyles />
+          {
+            mensagens.map((msg) => (
+              <MensagemDiv key={msg.msgID}>
+                <Sender>
+                  <span style={{color: 'blue'}}>
+                        usr:
+                  </span>
+                  {msg.autorID}
+                </Sender>
+                <MessageContent>
+                  <span style={{color: 'red', overflowWrap: 'break-word'}}>
                       msg:
-                    </span>
-                    {msg.conteudo}
-                  </div>
-                </MensagemDiv>
-              ))
-            }
-          </div>
-        </footer>
+                  </span>
+                  {msg.conteudo}
+                </MessageContent>
+              </MensagemDiv>
+            ))
+          }
+        </div>
       );
     }
   }

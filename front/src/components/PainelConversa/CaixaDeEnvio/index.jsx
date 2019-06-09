@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import Axios from 'axios';
-import {PainelEnviarMensagem, InputMensagem} from './styles';
+import {PainelEnviarMensagem, InputMensagem, PainelDigitarMensagem} from './styles';
 
 class CaixaEnvioMensagem extends React.Component {
   constructor(props) {
@@ -36,9 +36,7 @@ class CaixaEnvioMensagem extends React.Component {
       conteudo: conteudo,
       hora_enviada: this.getCurrentTime(),
     }).then(
-        (result) => {
-          console.log(result.data);
-        },
+        () => {},
         (error) => {
           this.setState({
             error,
@@ -65,9 +63,13 @@ class CaixaEnvioMensagem extends React.Component {
       return <div>Error: {error.message}</div>;
     } else {
       return (
-        <PainelEnviarMensagem onKeyDown={this.handleSubmit}>
-          <InputMensagem type="text" name="mensagem" autoComplete="off"
-            placeholder="mande uma mensagem"/>
+        <PainelEnviarMensagem>
+          <PainelDigitarMensagem>
+            <form onKeyDown={this.handleSubmit}>
+              <InputMensagem type="text" name="mensagem" autoComplete="off"
+                placeholder="mande uma mensagem"/>
+            </form>
+          </PainelDigitarMensagem>
         </PainelEnviarMensagem>
       );
     }
