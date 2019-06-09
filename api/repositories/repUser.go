@@ -47,8 +47,9 @@ func (rep *RepUser) GetUser(userid string) models.Usuario {
 	switch err := value.Scan(&id, &nome, &foto); err {
 	case sql.ErrNoRows:
 		fmt.Println("Usuário não encontrado")
+	case nil:
 	default:
-		log.Printf("Error %+v\n", err)
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 
 	user := models.Usuario{ID: id, Nome: nome, FotoPerfil: foto}
