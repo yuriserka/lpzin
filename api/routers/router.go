@@ -2,6 +2,9 @@ package routers
 
 import (
 	"fmt"
+	"strconv"
+
+	"github.com/yuriserka/lpzin/api/repositories"
 
 	"github.com/yuriserka/lpzin/api/controllers"
 	"github.com/yuriserka/lpzin/api/utils"
@@ -16,11 +19,17 @@ func init() {
 	router = gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./front/build", true)))
 
-	conn, err := utils.ConnDB()
+	db, err := utils.ConnDB()
 	if err != nil {
 		panic(fmt.Sprintf("db: %v", err))
 	}
-	defer conn.Close()
+	defer db.Close()
+
+	r := repositories.RepUser{}
+	r.Init(db)
+	id := r.SetUser("Yuri Serka", "foto de umgadokkk")
+	user := r.GetUser(strconv.Itoa(id))
+	fmt.Println(user)
 
 	homeRoutes()
 	userRoutes()
