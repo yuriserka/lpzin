@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import bg from './wallpaperpadrao.png';
 
 const PainelConversaDiv = styled.div`
     background: violet;
@@ -6,20 +7,7 @@ const PainelConversaDiv = styled.div`
     width: 69%;
     float: left;
     position: relative;
+    background-image: url(${bg});
 `;
 
-const PainelEnviarMensagem = styled.form`
-    display: flex;
-    flex-direction: row;
-    max-width: 100%;
-    min-height: 62px;
-    position: relative;
-    z-index: 2;
-`;
-
-const InputMensagem = styled.input`
-    line-height: 20px;
-    width: 100%;
-`;
-
-export {PainelConversaDiv, PainelEnviarMensagem, InputMensagem};
+export {PainelConversaDiv};

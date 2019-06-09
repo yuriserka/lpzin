@@ -9,10 +9,10 @@ import (
 )
 
 type Usuario struct {
-	ID         int      `json:"id"`
-	Nome       string   `json:"nome"`
-	Msg        Mensagem `json:"mensagem"`
-	FotoPerfil string   `json:"fotoPerfil"`
+	ID   int    `json:"id"`
+	Nome string `json:"nome"`
+	// Msg        Mensagem `json:"mensagem"`
+	FotoPerfil string `json:"fotoPerfil"`
 }
 
 func getImage(id int) string {
@@ -37,28 +37,8 @@ func getImage(id int) string {
 }
 
 var Usuarios = []Usuario{
-	Usuario{ID: 0, Nome: "Henriquezera", Msg: Mensagem{
-		ID:       0,
-		ChatID:   1000,
-		Autor:    0,
-		Conteudo: "ola mundo_0",
-	}, FotoPerfil: getImage(0)},
-	Usuario{ID: 1, Nome: "Ericzera", Msg: Mensagem{
-		ID:       1,
-		ChatID:   1000,
-		Autor:    1,
-		Conteudo: "ola mundo_1",
-	}, FotoPerfil: getImage(1)},
-	Usuario{ID: 2, Nome: "Dalton", Msg: Mensagem{
-		ID:       2,
-		ChatID:   1000,
-		Autor:    2,
-		Conteudo: "ola mundo_2",
-	}, FotoPerfil: getImage(2)},
-	Usuario{ID: 3, Nome: "Dalton_2", Msg: Mensagem{
-		ID:       3,
-		ChatID:   1000,
-		Autor:    3,
-		Conteudo: "ola mundo_2",
-	}, FotoPerfil: getImage(2)},
+	Usuario{ID: 0, Nome: "Henriquezera", FotoPerfil: getImage(0)},
+	Usuario{ID: 1, Nome: "Ericzera", FotoPerfil: getImage(1)},
+	Usuario{ID: 2, Nome: "Dalton", FotoPerfil: getImage(2)},
+	Usuario{ID: 3, Nome: "Dalton_2", FotoPerfil: getImage(2)},
 }
