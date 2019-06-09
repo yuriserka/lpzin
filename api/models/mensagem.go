@@ -5,4 +5,5 @@ type Mensagem struct {
 	ChatID   uint64 `json:"chatID"`
 	Autor    int    `json:"autorID"`
 	Conteudo string `json:"conteudo"`
+	HoraEnvio string `json:"hora_enviada"`
 }

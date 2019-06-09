@@ -16,7 +16,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "SENHA_DO_USER"
+	password = "root"
 	dbname   = "chat_lp"
 )
 
