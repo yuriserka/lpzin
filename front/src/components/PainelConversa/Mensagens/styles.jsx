@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import {createGlobalStyle} from 'styled-components';
 
 const MensagemDiv = styled.div`
     background: white;
@@ -36,8 +35,4 @@ const MessageContent = styled.div`
     font-size: 14px;
 `;
 
-const GlobalStyles = createGlobalStyle`
-
-`;
-
-export {MensagemDiv, Sender, MessageContent, GlobalStyles};
+export {MensagemDiv, Sender, MessageContent};

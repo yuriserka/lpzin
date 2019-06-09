@@ -1,7 +1,7 @@
 /* eslint-disable require-jsdoc */
 import React from 'react';
 import Axios from 'axios';
-import {MensagemDiv, Sender, MessageContent, GlobalStyles} from './styles';
+import {MensagemDiv, Sender, MessageContent} from './styles';
 
 class Mensagens extends React.Component {
   constructor(props) {
@@ -41,7 +41,6 @@ class Mensagens extends React.Component {
     } else {
       return (
         <div style={{height: '545px', overflow: 'auto'}}>
-          <GlobalStyles />
           {
             mensagens.map((msg) => (
               <MensagemDiv key={msg.msgID}>
