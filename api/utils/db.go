@@ -42,14 +42,3 @@ func ConnDB() (*sql.DB, error) {
 
 	return conn, err
 }
-
-// usar apenas uma conexão pro DB, para realizar as operações
-// usando o defer db.Close() para fechar o DB ao fim do escopo da função
-// func DesconnDB(db *sql.DB) error {
-// 	err := db.Close()
-
-// 	if err != nil {
-// 		panic(fmt.Sprintf("db: %v", err))
-// 	}
-// 	return err
-// }
