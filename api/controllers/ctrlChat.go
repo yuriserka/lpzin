@@ -30,7 +30,7 @@ func PostInChat(c *gin.Context) {
 
 func GetChat(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	if chatID, err := strconv.ParseUint(c.Param("chatID"), 10, 64); err == nil {
+	if chatID, err := strconv.Atoi(c.Param("chatID")); err == nil {
 		for _, val := range models.Chats {
 			if val.ID == chatID {
 				c.JSON(http.StatusOK, &val.Mensagens)

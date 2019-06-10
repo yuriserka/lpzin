@@ -1,7 +1,7 @@
 package models
 
 type Chat struct {
-	ID        uint64     `json:"chatID"`
+	ID        int        `json:"chatID"`
 	Nome      string     `json:"chatName"`
 	Users     []Usuario  `json:users`
 	Mensagens []Mensagem `json:messages`

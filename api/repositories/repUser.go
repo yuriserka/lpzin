@@ -20,6 +20,9 @@ func (rep *RepUser) Init(db *sql.DB) {
 
 // SetUser cria um usuário no banco de dados e retorna o id do usuário criado
 func (rep *RepUser) SetUser(nome string, foto string) int {
+	if len(nome) > 100 {
+		log.Panic("O nome do usuário deve possuir até 100 caracteres")
+	}
 	sqlStatement := `
 	INSERT INTO Usuario (nome, foto)
 	VALUES ($1, $2)

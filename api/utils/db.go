@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	// driver do postegresql
 	_ "github.com/lib/pq"
 )
 
@@ -12,7 +13,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "root"
+	password = "33583549"
 	dbname   = "chat_lp"
 )
 
