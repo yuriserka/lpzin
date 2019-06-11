@@ -26,6 +26,8 @@ var (
 	repMsg = repositories.RepMessage{}
 )
 
+// Init simula de forma simplificada a interação com o banco de dados do sistema a fim de testar suas
+// funcionalidades
 func Init() {
 	db, err := common.ConnDB()
 	if err != nil {
@@ -55,16 +57,16 @@ func home() {
 
 		switch fmt.Scanf("%d\n", &opt); opt {
 		case entrar:
-			if usr, logado := autenticar_test(); logado {
-				enterChat_test(usr)
+			if usr, logado := autenticarTest(); logado {
+				entrarNoChatTest(usr)
 			}
 		case cadastrar:
-			cadastrar_test()
+			cadastrarTest()
 		}
 	}
 }
 
-func enterChat_test(usr models.Usuario) {
+func entrarNoChatTest(usr models.Usuario) {
 	const chatIDStub = 1
 	repCht.SetChatUser(strconv.Itoa(chatIDStub), strconv.Itoa(usr.ID))
 	chat := repCht.GetChat(strconv.Itoa(chatIDStub))
@@ -75,18 +77,19 @@ func enterChat_test(usr models.Usuario) {
 
 		for _, v := range msgs {
 			u := repUsr.GetUser(strconv.Itoa(v.Autor))
-			fmt.Printf("%s => %s%3s\n", u.Nome, v.Conteudo, v.HoraEnvio)
+			fmt.Printf("%s => %-6s %-10s\n", u.Nome, v.Conteudo, v.HoraEnvio)
 		}
 
 		fmt.Print("Digite uma mensagem: ")
 		reader := bufio.NewReader(os.Stdin)
 		msg, _ := reader.ReadString('\n')
+		msg = msg[:len(msg)-2] // retira o '\n' da mensagem
 
 		repMsg.SetMsg(strconv.Itoa(usr.ID), strconv.Itoa(chat.ID), msg)
 	}
 }
 
-func autenticar_test() (models.Usuario, bool) {
+func autenticarTest() (models.Usuario, bool) {
 	fmt.Println("\tAutenticar-se")
 	fmt.Print("digite seu ID: ")
 	var id string
@@ -97,7 +100,7 @@ func autenticar_test() (models.Usuario, bool) {
 	return usuario, true
 }
 
-func cadastrar_test() int {
+func cadastrarTest() int {
 	fmt.Println("\tCadastre-se")
 	fmt.Print("Digite seu nome: ")
 	var nome string
