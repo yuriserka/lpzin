@@ -76,7 +76,7 @@ func (rep *RepChat) GetChat(chatid string) models.Chat {
 
 	users = rep.getChatUsers(strconv.Itoa(id))
 
-	// Fazer getChatMsgs
+	mensagens = rep.GetChatMsgs(strconv.Itoa(id))
 
 	chat := models.Chat{ID: id, Nome: nome, Users: users, Mensagens: mensagens}
 
@@ -108,7 +108,8 @@ func (rep *RepChat) getChatUsers(chatid string) []models.Usuario {
 	return users
 }
 
-func (rep *RepChat) getChatMsgs(chatid string) []models.Mensagem {
+// GetChatMsgs recupera as mensagens de um chat de acordo com o id do chat passado
+func (rep *RepChat) GetChatMsgs(chatid string) []models.Mensagem {
 	msgs := []models.Mensagem{}
 	sqlStatement := `
 	SELECT IDMsg FROM Mensagem
@@ -124,6 +125,7 @@ func (rep *RepChat) getChatMsgs(chatid string) []models.Mensagem {
 	}
 	defer rows.Close()
 
+	msgs, _ = getMsgsFromRows(rows, rep.db)
 	return msgs
 }
 
@@ -144,4 +146,23 @@ func getUsersFromRows(rows *sql.Rows, db *sql.DB) ([]models.Usuario, error) {
 		users = append(users, user)
 	}
 	return users, nil
+}
+
+func getMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) {
+	msgs := []models.Mensagem{}
+	rep := RepMessage{}
+	rep.Init(db)
+	for rows.Next() {
+		var (
+			msgid int
+			msg   models.Mensagem
+		)
+		err := rows.Scan(&msgid)
+		if err != nil {
+			return nil, err
+		}
+		msg = rep.GetMsg(strconv.Itoa(msgid))
+		msgs = append(msgs, msg)
+	}
+	return msgs, nil
 }
