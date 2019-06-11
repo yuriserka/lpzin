@@ -31,7 +31,7 @@ func (rep *RepChat) SetChat(nome, userid string) int {
 	RETURNING id`
 	err := rep.db.QueryRow(sqlStatement, nome).Scan(&id)
 	if err != nil {
-		log.Printf("Error %+v\n", err)
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 	// Adicionando o usuario ao chat
 	rep.SetChatUser(strconv.Itoa(id), userid)
@@ -41,6 +41,7 @@ func (rep *RepChat) SetChat(nome, userid string) int {
 	return id
 }
 
+// SetChatUser seta o usuário pasado como participante do chat passado
 func (rep *RepChat) SetChatUser(chatid, userid string) {
 	sqlStatement := `
 	INSERT INTO Chat_tem_usuario(idchat, idusuario)
@@ -48,10 +49,11 @@ func (rep *RepChat) SetChatUser(chatid, userid string) {
 
 	_, err := rep.db.Exec(sqlStatement, chatid, userid)
 	if err != nil {
-		log.Printf("Error %+v\n", err)
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 }
 
+// GetChat retorna o chat de acordo com o id do chat passado
 func (rep *RepChat) GetChat(chatid string) models.Chat {
 	var (
 		id        int
@@ -104,6 +106,25 @@ func (rep *RepChat) getChatUsers(chatid string) []models.Usuario {
 	}
 
 	return users
+}
+
+func (rep *RepChat) getChatMsgs(chatid string) []models.Mensagem {
+	msgs := []models.Mensagem{}
+	sqlStatement := `
+	SELECT IDMsg FROM Mensagem
+	WHERE IDChat = $1;
+	`
+	rows, err := rep.db.Query(sqlStatement, chatid)
+	switch err {
+	case sql.ErrNoRows:
+		fmt.Println("O chat não possui mensagens")
+	case nil:
+	default:
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
+	}
+	defer rows.Close()
+
+	return msgs
 }
 
 func getUsersFromRows(rows *sql.Rows, db *sql.DB) ([]models.Usuario, error) {

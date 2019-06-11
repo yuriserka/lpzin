@@ -31,7 +31,7 @@ func (rep *RepUser) SetUser(nome string, foto string) int {
 
 	err := rep.db.QueryRow(sqlStatement, nome, foto).Scan(&id)
 	if err != nil {
-		log.Printf("Error %+v\n", err)
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 	fmt.Println("ID do usuário criado: ", id)
 	return id

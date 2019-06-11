@@ -12,7 +12,6 @@ type Usuario struct {
 	ID         int    `json:"id"`
 	Nome       string `json:"nome"`
 	FotoPerfil string `json:"fotoPerfil"`
-	// Msg        Mensagem `json:"mensagem"`
 }
 
 func getImage(id int) string {

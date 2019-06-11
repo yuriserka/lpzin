@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/yuriserka/lpzin/api/common"
 	"github.com/yuriserka/lpzin/api/controllers"
 	"github.com/yuriserka/lpzin/api/repositories"
-	"github.com/yuriserka/lpzin/api/utils"
 	"github.com/yuriserka/lpzin/schema"
 
 	"github.com/gin-gonic/contrib/static"
@@ -19,7 +19,7 @@ func init() {
 	router = gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./front/build", true)))
 
-	db, err := utils.ConnDB()
+	db, err := common.ConnDB()
 	if err != nil {
 		panic(fmt.Sprintf("db: %v", err))
 	}

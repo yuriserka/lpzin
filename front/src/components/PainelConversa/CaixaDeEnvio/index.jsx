@@ -13,7 +13,7 @@ class CaixaEnvioMensagem extends React.Component {
       error: null,
       contadorMsgs: 0,
     };
-    
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getCurrentTime = this.getCurrentTime.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
