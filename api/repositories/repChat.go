@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/yuriserka/lpzin/api/models"
 )
@@ -20,7 +19,7 @@ func (rep *RepChat) Init(db *sql.DB) {
 }
 
 // SetChat recebe o nome do chat e o usuário criador do chat e retorna o id do chat
-func (rep *RepChat) SetChat(nome, userid string) int {
+func (rep *RepChat) SetChat(nome string, userid int) int {
 	if len(nome) > 100 {
 		log.Panic("O nome do chat deve possuir até 100 caracteres")
 	}
@@ -34,7 +33,7 @@ func (rep *RepChat) SetChat(nome, userid string) int {
 		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 	// Adicionando o usuario ao chat
-	rep.SetChatUser(strconv.Itoa(id), userid)
+	rep.SetChatUser(id, userid)
 
 	fmt.Println("ID do Chat criado: ", id)
 
@@ -42,7 +41,7 @@ func (rep *RepChat) SetChat(nome, userid string) int {
 }
 
 // SetChatUser seta o usuário pasado como participante do chat passado
-func (rep *RepChat) SetChatUser(chatid, userid string) {
+func (rep *RepChat) SetChatUser(chatid, userid int) {
 	sqlStatement := `
 	INSERT INTO Chat_tem_usuario(idchat, idusuario)
 	VALUES ($1, $2)`
@@ -54,7 +53,7 @@ func (rep *RepChat) SetChatUser(chatid, userid string) {
 }
 
 // GetChat retorna o chat de acordo com o id do chat passado
-func (rep *RepChat) GetChat(chatid string) models.Chat {
+func (rep *RepChat) GetChat(chatid int) models.Chat {
 	var (
 		id        int
 		nome      string
@@ -74,16 +73,17 @@ func (rep *RepChat) GetChat(chatid string) models.Chat {
 		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 
-	users = rep.getChatUsers(strconv.Itoa(id))
+	users = rep.GetChatUsers(id)
 
-	mensagens = rep.GetChatMsgs(strconv.Itoa(id))
+	mensagens = rep.GetChatMsgs(id)
 
 	chat := models.Chat{ID: id, Nome: nome, Users: users, Mensagens: mensagens}
 
 	return chat
 }
 
-func (rep *RepChat) getChatUsers(chatid string) []models.Usuario {
+// GetChatUsers recebe o id do chat e retorna quais são os usuários que fazem parte do chat
+func (rep *RepChat) GetChatUsers(chatid int) []models.Usuario {
 	sqlStatement := `
 	SELECT u.id FROM Usuario u
 	JOIN Chat_tem_usuario chu ON u.id = chu.idusuario
@@ -109,7 +109,7 @@ func (rep *RepChat) getChatUsers(chatid string) []models.Usuario {
 }
 
 // GetChatMsgs recupera as mensagens de um chat de acordo com o id do chat passado
-func (rep *RepChat) GetChatMsgs(chatid string) []models.Mensagem {
+func (rep *RepChat) GetChatMsgs(chatid int) []models.Mensagem {
 	msgs := []models.Mensagem{}
 	sqlStatement := `
 	SELECT IDMsg FROM Mensagem
@@ -142,7 +142,7 @@ func getUsersFromRows(rows *sql.Rows, db *sql.DB) ([]models.Usuario, error) {
 		if err != nil {
 			return nil, err
 		}
-		user = rep.GetUser(strconv.Itoa(userid))
+		user = rep.GetUser(userid)
 		users = append(users, user)
 	}
 	return users, nil
@@ -161,7 +161,7 @@ func getMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) {
 		if err != nil {
 			return nil, err
 		}
-		msg = rep.GetMsg(strconv.Itoa(msgid))
+		msg = rep.GetMsg(msgid)
 		msgs = append(msgs, msg)
 	}
 	return msgs, nil

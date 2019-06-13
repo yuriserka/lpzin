@@ -2,7 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/yuriserka/lpzin/api/common"
 	"github.com/yuriserka/lpzin/api/controllers"
@@ -32,17 +31,6 @@ func init() {
 	ruser.Init(db)
 	rchat := repositories.RepChat{}
 	rchat.Init(db)
-
-	id1 := ruser.SetUser("Yuri Serka", "foto de umgadokkk")
-	id2 := ruser.SetUser("Henrique Mariano", "lindoookkk")
-	user1 := ruser.GetUser(strconv.Itoa(id1))
-	user2 := ruser.GetUser(strconv.Itoa(id2))
-	fmt.Println(user1)
-	fmt.Println(user2)
-	idchat := rchat.SetChat("Klub dos WebAmigos da UnB", strconv.Itoa(id1))
-	rchat.SetChatUser(strconv.Itoa(idchat), strconv.Itoa(id2))
-	chat := rchat.GetChat(strconv.Itoa(idchat))
-	fmt.Println("Chat:", chat)
 
 	homeRoutes()
 	userRoutes()

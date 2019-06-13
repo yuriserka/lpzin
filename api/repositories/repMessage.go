@@ -19,7 +19,7 @@ func (rep *RepMessage) Init(db *sql.DB) {
 }
 
 // SetMsg cria uma mensagem indicando qual o id do usuário, chat e o conteúdo da msg e retorna o id da msg criada
-func (rep *RepMessage) SetMsg(userid, chatid, msg string) int {
+func (rep *RepMessage) SetMsg(userid, chatid int, msg string) int {
 	if len(msg) > 500 {
 		log.Panic("A mensagem deve conter até 500 caracteres")
 	}
@@ -42,7 +42,7 @@ func (rep *RepMessage) SetMsg(userid, chatid, msg string) int {
 }
 
 // GetMsg passado a id da mensagem é retornado uma mensagem
-func (rep *RepMessage) GetMsg(msgid string) models.Mensagem {
+func (rep *RepMessage) GetMsg(msgid int) models.Mensagem {
 	msgret := models.Mensagem{}
 	sqlStatement := `
 	SELECT IDMsg, Hr_env, Msg, IDChat, IDUsuario
