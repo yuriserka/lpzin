@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/yuriserka/lpzin/api/models"
 	"github.com/yuriserka/lpzin/schema"
@@ -90,6 +91,10 @@ func entrarNoChatTest(usr models.Usuario) {
 		reader := bufio.NewReader(os.Stdin)
 		msg, _ := reader.ReadString('\n')
 		msg = msg[:len(msg)-2] // retira o '\n' da mensagem
+
+		if c := strings.Compare(msg, "quit"); c == 0 {
+			break
+		}
 
 		repMsg.SetMsg(usr.ID, chat.ID, msg)
 	}
