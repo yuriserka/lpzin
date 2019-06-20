@@ -3,8 +3,8 @@ package models
 type Chat struct {
 	ID        int        `json:"chatID"`
 	Nome      string     `json:"chatName"`
-	Users     []Usuario  `json:users`
-	Mensagens []Mensagem `json:messages`
+	Users     []Usuario  `json:"users"`
+	Mensagens []Mensagem `json:"messages"`
 }
 
 var Chats = []Chat{

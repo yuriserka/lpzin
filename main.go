@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/yuriserka/lpzin/api/tests"
+	"github.com/yuriserka/lpzin/api/routers"
 )
 
 func main() {
-	integracao.Init()
+	routers.Run()
 }
