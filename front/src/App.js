@@ -42,7 +42,6 @@ class App extends React.Component {
   }
 
   addMensagem = (msg) => {
-    console.log(msg)
     this.setState({
       chats: this.state.chats.map(c => {
         if (c.ID === msg.ChatID) {
@@ -54,12 +53,17 @@ class App extends React.Component {
   }
 
   render() {
+    const chatAtual = this.state.chatAtual
+    const usuarioAtual = this.state.usuarioAtual
+    const ehGrupo = chatAtual === null ? false : (chatAtual.Usuarios.length > 2 ? true : false)
     return (
       <div className="App" style={this.getAppStyle()}>
-        <Header chatAtual={this.state.chatAtual} usuarioAtual={this.state.usuarioAtual} />
-        <Sidebar chats={this.state.chats} myID={this.state.usuarioAtual.ID} getChat={this.getChat} />
-        <ListaMensagens chatAtual={this.state.chatAtual} mensagens={this.state.mensagens} myID={this.state.usuarioAtual.ID} />
-        <CaixaEnvio chatAtual={this.state.chatAtual} usuarioAtual={this.state.usuarioAtual} addMensagem={this.addMensagem}/>
+        <Header chatAtual={chatAtual} usuarioAtual={usuarioAtual} ehGrupo={ehGrupo} />
+        <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.getChat} />
+        <ListaMensagens chatAtual={chatAtual} mensagens={this.state.mensagens}
+          myID={usuarioAtual.ID} ehGrupo={ehGrupo} />
+        <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual}
+          addMensagem={this.addMensagem} ehGrupo={ehGrupo} />
       </div>
     );
   }

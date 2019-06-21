@@ -77,7 +77,9 @@ const c1 = {
     Usuarios: [
         u1, u2, u3
     ],
-    Mensagens: [],
+    Mensagens: [
+        m1, m2, m3, m4, m5, m6, m7, m8
+    ],
     FotoPerfil: chat1Img,
 }
 

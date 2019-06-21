@@ -15,6 +15,7 @@ export class ListaChats extends React.Component {
 ListaChats.propTypes = {
   chats: PropTypes.array.isRequired,
   myID: PropTypes.number.isRequired,
+  getChat: PropTypes.func.isRequired,
 }
 
 export default ListaChats

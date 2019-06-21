@@ -26,6 +26,7 @@ export class Sidebar extends Component {
 
 Sidebar.propTypes = {
   myID: PropTypes.number.isRequired,
+  getChat: PropTypes.func.isRequired,
 }
 
 export default Sidebar

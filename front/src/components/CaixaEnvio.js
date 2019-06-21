@@ -1,6 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ImagemPerfil from './ImagemPerfil';
+import ImagemPerfil from './ImagemPerfil'
+import styled from 'styled-components'
+
+const Input = styled.input`
+  height: 100%;
+  resize: none;
+  width: 100%;
+  border-radius: 100px;
+  outline: none;
+  border: none !important;
+  padding-left: 10px; 
+  &:focus {
+    border-bottom: 20px solid blue;
+  }
+`
 
 export class CaixaEnvio extends React.Component {
   constructor(props) {
@@ -9,31 +23,32 @@ export class CaixaEnvio extends React.Component {
       inputMsg: ''
     }
   }
+
   getContainerStyle = () => {
     return {
       display: 'flex',
       float: 'left',
-      width: '69%',
+      width: '70%',
       height: '100%',
       flexWrap: 'wrap',
       justifyContent: 'center',
+      paddingTop: '20px',
     }
   }
 
-  getInputStyle = () => {
-    return {
-      height: '100%',
-      resize: 'none',
-      width: '100%',
-      borderRadius: '10px',
-      outline: 'none',
-      WebkitUserSelect: 'none',
-      WebkitTouchCallout: 'none',
-      MozUserSelect: 'none',
-      msUserSelect: 'none',
-      KhtmlUserSelect: 'none',
+  postHandler = (e) => {
+    if (e.keyCode === 13 && e.target.value.length > 0) {
+      this.props.addMensagem({
+        ID: this.props.chatAtual.Mensagens.length + 1,
+        ChatID: this.props.chatAtual.ID,
+        AutorID: this.props.usuarioAtual.ID,
+        Conteudo: e.target.value,
+      })
+      this.setState({ inputMsg: '' })
     }
   }
+
+  changeHandler = (e) => this.setState({ inputMsg: e.target.value });
 
   render() {
     if (this.props.chatAtual === null) {
@@ -43,40 +58,16 @@ export class CaixaEnvio extends React.Component {
     return (
       <div style={this.getContainerStyle()}>
         <ImagemPerfil obj={this.props.usuarioAtual} />
-        <div style={{ padding: '20px 20px 0 20px', height: '100%', width: '50%', }}>
-          <div>
-            <input placeholder="Escreva uma mensagem..." autoFocus="autofocus" style={this.getInputStyle()}
-              onChange={this.changeHandler} onDoubleClick={this.PostHandler(chat)} />
+        <div style={{ padding: '0px 20px 0 20px', height: '100%', width: '50%' }}>
+          <div style={{ height: '60px' }}>
+            <Input placeholder="Escreva uma mensagem..." autoFocus="autofocus"
+              onChange={this.changeHandler} value={this.state.inputMsg}
+              onKeyDown={this.postHandler} />
           </div>
         </div>
-        <div>
-          <ImagemPerfil obj={chat} />
-        </div>
+        <ImagemPerfil obj={chat} />
       </div>
     )
-  }
-
-  PostHandler = (chat) => {
-    if (this.state.inputMsg.length > 0) {
-      const msg = this.state.inputMsg
-      return (
-        this.props.addMensagem.bind(this,
-          {
-            ID: chat.Mensagens.length + 1,
-            ChatID: chat.ID,
-            AutorID: this.props.usuarioAtual.ID,
-            Conteudo: msg,
-          }
-        )
-      )
-    }
-  }
-
-  changeHandler = (e) => {
-    e.preventDefault()
-    this.setState({
-      inputMsg: e.target.value,
-    });
   }
 }
 

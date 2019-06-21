@@ -8,19 +8,22 @@ const ChatBoxDiv = styled.div`
   &:hover {
     background: whitesmoke;
   }
+  cursor: pointer;
+  height: 72px;
 `;
 
 const FimChatBox = styled.div`
   border: 0;
   height: 1px;
   background-image: linear-gradient(to right, transparent, silver, transparent);
+  position: absolute;
 `;
 
 export class Chat extends React.Component {
   getChatInfoStyles = () => {
     return {
       margin: '20px 0 0 10px',
-      maxWidth: '80%',
+      maxWidth: '75%',
       minWidth: '50%'
     }
   }
@@ -91,6 +94,7 @@ export class Chat extends React.Component {
 Chat.propTypes = {
   chat: PropTypes.object.isRequired,
   myID: PropTypes.number.isRequired,
+  getChat: PropTypes.func.isRequired,
 }
 
 export default Chat
