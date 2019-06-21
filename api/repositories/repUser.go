@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/yuriserka/lpzin/api/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // RepUser contém a instância do BD a ser utilizada
@@ -19,17 +20,31 @@ func (rep *RepUser) Init(db *sql.DB) {
 }
 
 // SetUser cria um usuário no banco de dados e retorna o id do usuário criado
-func (rep *RepUser) SetUser(nome string, foto string) int {
+func (rep *RepUser) SetUser(nome, foto, username, senha string) int {
 	if len(nome) > 100 {
-		log.Panic("O nome do usuário deve possuir até 100 caracteres")
+		log.Panic("O nome deve possuir até 100 caracteres")
 	}
+	if len(username) > 100 {
+		log.Panic("O nome de usuário deve possuir até 100 caracteres")
+	}
+
+	var (
+		hash []byte
+		err  error
+	)
+
+	hash, err = encryptPass([]byte(senha))
+	if err != nil {
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
+	}
+
 	sqlStatement := `
-	INSERT INTO Usuario (nome, foto)
-	VALUES ($1, $2)
+	INSERT INTO Usuario (nome, foto, username, senha)
+	VALUES ($1, $2, $3, $4)
 	RETURNING id`
 	id := 0
 
-	err := rep.db.QueryRow(sqlStatement, nome, foto).Scan(&id)
+	err = rep.db.QueryRow(sqlStatement, nome, foto, username, string(hash)).Scan(&id)
 	if err != nil {
 		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
@@ -40,14 +55,16 @@ func (rep *RepUser) SetUser(nome string, foto string) int {
 // GetUser retorna um usuário de acordo com a ID passada
 func (rep *RepUser) GetUser(userid int) models.Usuario {
 	var (
-		id   int
-		nome string
-		foto string
+		id        int
+		nome      string
+		foto      string
+		username  string
+		ultimaVez string
 	)
-	sqlStatement := `SELECT id, nome, foto FROM Usuario WHERE id = $1`
+	sqlStatement := `SELECT id, nome, foto, username, ultima_vez FROM Usuario WHERE id = $1`
 	value := rep.db.QueryRow(sqlStatement, userid)
 
-	switch err := value.Scan(&id, &nome, &foto); err {
+	switch err := value.Scan(&id, &nome, &foto, &username, &ultimaVez); err {
 	case sql.ErrNoRows:
 		fmt.Println("Usuário não encontrado")
 	case nil:
@@ -55,9 +72,27 @@ func (rep *RepUser) GetUser(userid int) models.Usuario {
 		log.Panic(fmt.Sprintf("Error %+v\n", err))
 	}
 
-	user := models.Usuario{ID: id, Nome: nome, FotoPerfil: foto}
+	user := models.Usuario{ID: id, Nome: nome, FotoPerfil: foto, Username: username, UltimaVez: ultimaVez}
 
 	return user
+}
+
+// GetUserID recebe o username do usuário e retorna o id
+func (rep *RepUser) GetUserID(username string) int {
+	id := -1
+	sqlStatement := `
+	SELECT id FROM Usuario WHERE username = $1
+	`
+	value := rep.db.QueryRow(sqlStatement, username)
+
+	switch err := value.Scan(&id); err {
+	case sql.ErrNoRows:
+		fmt.Println("Usuário não encontrado")
+	case nil:
+	default:
+		log.Panic(fmt.Sprintf("Error %+v\n", err))
+	}
+	return id
 }
 
 // GetUserMsgs retorna todas as mensagens de um usuário
@@ -81,6 +116,12 @@ func (rep *RepUser) GetUserMsgs(userid int) []models.Mensagem {
 	return msgs
 }
 
+// UserAuth recebe o username e senha, retorna true se a senha for correta e false caso contrário
+func (rep *RepUser) UserAuth(username, senha string) bool {
+	auth := validatePass(rep.db, username, senha)
+	return auth
+}
+
 func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) {
 	msgs := []models.Mensagem{}
 	var msg models.Mensagem
@@ -92,4 +133,41 @@ func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) 
 		msgs = append(msgs, msg)
 	}
 	return msgs, nil
+}
+
+func encryptPass(senha []byte) ([]byte, error) {
+	hash, err := bcrypt.GenerateFromPassword(senha, bcrypt.DefaultCost)
+	return hash, err
+}
+
+func getHashPassword(db *sql.DB, username string) (string, error) {
+	sqlStatement := `
+	SELECT senha FROM Usuario
+	WHERE username = $1
+	`
+	var hash string
+
+	err := db.QueryRow(sqlStatement, username).Scan(&hash)
+	return hash, err
+}
+
+func validatePass(db *sql.DB, username, senha string) bool {
+	var (
+		pass     []byte
+		hashpass string
+		err      error
+	)
+
+	pass = []byte(senha)
+	hashpass, err = getHashPassword(db, username)
+	if err != nil {
+		log.Panic("Usuário não existente")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashpass), pass)
+	if err != nil {
+		return false
+	}
+
+	return true
 }

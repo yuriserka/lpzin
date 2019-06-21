@@ -1,4 +1,4 @@
-package integracao
+package testes
 
 import (
 	"bufio"
@@ -39,14 +39,14 @@ func Init() {
 
 	defer db.Close()
 
-	//schema.DropSchema(db)
+	schema.DropSchema(db)
 	schema.CreateSchema(db)
 
 	repUsr.Init(db)
 	repCht.Init(db)
 	repMsg.Init(db)
 
-	idAdm := repUsr.SetUser("AdmCorno", "kkk bovino")
+	idAdm := repUsr.SetUser("AdmCorno", "kkk bovino", "corno", "corno123")
 	repCht.SetChat("Grupo de Testes", idAdm)
 
 	home()
@@ -62,6 +62,8 @@ func home() {
 		case entrar:
 			if usr, logado := autenticarTest(); logado {
 				entrarNoChatTest(usr)
+			} else {
+				fmt.Println("Pera lá amigão seu username ou senha está incorreto")
 			}
 		case cadastrar:
 			cadastrarTest()
@@ -101,26 +103,59 @@ func entrarNoChatTest(usr models.Usuario) {
 }
 
 func autenticarTest() (models.Usuario, bool) {
-	fmt.Println("\tAutenticar-se")
-	fmt.Print("digite seu ID: ")
-	var id string
-	fmt.Scanln(&id)
-	aux, err := strconv.Atoi(id)
-	if err != nil {
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
-	usuario := repUsr.GetUser(aux)
+	var (
+		username string
+		id       int
+		usuario  models.Usuario
+		senha    string
+		reader   *bufio.Reader
+	)
 
-	return usuario, true
+	fmt.Println("\tAutenticar-se")
+	fmt.Print("digite seu username: ")
+	reader = bufio.NewReader(os.Stdin)
+	username, _ = reader.ReadString('\n')
+	username = username[:len(username)-2]
+
+	fmt.Print("digite sua senha:")
+	reader = bufio.NewReader(os.Stdin)
+	senha, _ = reader.ReadString('\n')
+	senha = senha[:len(senha)-2]
+
+	id = repUsr.GetUserID(username)
+
+	logado := repUsr.UserAuth(username, senha)
+	if logado {
+		usuario = repUsr.GetUser(id)
+		return usuario, logado
+	}
+	return usuario, logado
 }
 
 func cadastrarTest() int {
 	fmt.Println("\tCadastre-se")
 	fmt.Print("Digite seu nome: ")
-	var nome string
-	fmt.Scanln(&nome)
+	var (
+		nome     string
+		username string
+		senha    string
+		reader   *bufio.Reader
+	)
+	reader = bufio.NewReader(os.Stdin)
+	nome, _ = reader.ReadString('\n')
+	nome = nome[:len(nome)-2]
 
-	return repUsr.SetUser(nome, "FOTO DO USUARIO")
+	fmt.Print("Digite seu username: ")
+	reader = bufio.NewReader(os.Stdin)
+	username, _ = reader.ReadString('\n')
+	username = username[:len(username)-2]
+
+	fmt.Print("Digite sua senha: ")
+	reader = bufio.NewReader(os.Stdin)
+	senha, _ = reader.ReadString('\n')
+	senha = senha[:len(senha)-2]
+
+	return repUsr.SetUser(nome, "FOTO DO USUARIO", username, senha)
 }
 
 func getUserMsgsTest() {
