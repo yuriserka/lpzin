@@ -21,7 +21,7 @@ export class CaixaEnvio extends React.Component {
 
 CaixaEnvio.propTypes = {
   myID: PropTypes.number.isRequired,
-  chatAtual: PropTypes.object.isRequired,
+  chatAtual: PropTypes.object,
 }
 
 export default CaixaEnvio

@@ -3,6 +3,7 @@ import ListaMensagens from './components/ListaMensagens';
 import { StubMensagens, StubChats } from './stubs';
 import Sidebar from './components/Sidebar';
 import CaixaEnvio from './components/CaixaEnvio';
+import Header from './components/Header';
 
 class App extends React.Component {
   constructor() {
@@ -42,6 +43,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App" style={this.getAppStyle()}>
+        <Header chatAtual={this.state.chatAtual} />
         <Sidebar chats={this.state.chats} myID={0} getChat={this.getChat} />
         <ListaMensagens chatAtual={this.state.chatAtual} mensagens={this.state.mensagens} myID={0} />
         <CaixaEnvio chatAtual={this.state.chatAtual} myID={0} />

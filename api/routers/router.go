@@ -2,10 +2,10 @@ package routers
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/yuriserka/lpzin/api/common"
 	"github.com/yuriserka/lpzin/api/controllers"
-	"github.com/yuriserka/lpzin/api/repositories"
 	"github.com/yuriserka/lpzin/schema"
 
 	"github.com/gin-gonic/contrib/static"
@@ -20,21 +20,20 @@ func init() {
 
 	db, err := common.ConnDB()
 	if err != nil {
-		panic(fmt.Sprintf("db: %v", err))
+		log.Panic(fmt.Sprintf("db: %v", err))
 	}
 	defer db.Close()
 	schema.DropSchema(db) // método temporário para realizar testes
 	schema.CreateSchema(db)
 
-	// Inicialização dos repositórios a fim de teste, depois mudar as estruturas dos controllers para ter que só inicializar o controller aqui
-	ruser := repositories.RepUser{}
-	ruser.Init(db)
-	rchat := repositories.RepChat{}
-	rchat.Init(db)
+	userController := &controllers.UserController{}
+	userController.Init(db)
+	chatController := &controllers.ChatController{}
+	chatController.Init(db)
 
 	homeRoutes()
-	userRoutes()
-	chatRoutes()
+	userRoutes(userController)
+	chatRoutes(chatController)
 }
 
 // Run roda o servidor com ele escutando na porta 8080
@@ -46,14 +45,14 @@ func homeRoutes() {
 	router.GET("/", controllers.GetHomePage)
 }
 
-func userRoutes() {
-	router.POST("/usuarios", controllers.PostUsers)
-	router.GET("/usuarios", controllers.GetAllUsers)
-	router.GET("/usuarios/:userID", controllers.GetUser)
+func userRoutes(userController *controllers.UserController) {
+	router.POST("/usuarios", userController.PostUsers)
+	router.GET("/usuarios", userController.GetAllUsers)
+	router.GET("/usuarios/:userID", userController.GetUser)
 }
 
-func chatRoutes() {
-	router.POST("/chat", controllers.PostChat)
-	router.POST("/chat/:chatID", controllers.PostInChat)
-	router.GET("/chat/:chatID", controllers.GetChat)
+func chatRoutes(chatController *controllers.ChatController) {
+	router.POST("/chat", chatController.PostChat)
+	router.POST("/chat/:chatID", chatController.PostInChat)
+	router.GET("/chat/:chatID", chatController.GetChat)
 }
