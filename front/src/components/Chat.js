@@ -55,7 +55,7 @@ export class Chat extends React.Component {
     return <ImagemPerfil obj={this.props.chat} ehGrupo={ehGrupo} />
   }
 
-  getUltimaMensagemStyle = () => {
+  antiTextoLongo = () => {
     return {
       display: 'inline-block',
       flexGrow: '1',
@@ -73,11 +73,11 @@ export class Chat extends React.Component {
       <ChatBoxDiv onClick={this.props.getChat.bind(this, ID)}>
         {this.getImagem()}
         <div style={this.getChatInfoStyles()}>
-          <span nome={Nome} >
+          <span nome={Nome} style={this.antiTextoLongo()}>
             <strong>{Nome}</strong>
           </span>
           <div>
-            <span style={this.getUltimaMensagemStyle()}>
+            <span style={this.antiTextoLongo()}>
               {this.getPreviewUltimaMensagem()}
             </span>
           </div>

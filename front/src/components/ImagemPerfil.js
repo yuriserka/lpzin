@@ -46,7 +46,7 @@ export class ImagemPerfil extends React.Component {
 
 ImagemPerfil.propTypes = {
   obj: PropTypes.object.isRequired,
-  ehGrupo: PropTypes.bool.isRequired,
+  ehGrupo: PropTypes.bool,
 }
 
 export default ImagemPerfil

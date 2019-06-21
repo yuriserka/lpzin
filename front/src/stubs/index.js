@@ -1,20 +1,25 @@
 import chat1Img from './images/chat1.jpg'
-import usuario1Img from './images/usuario1.jpg'
+import henriqFoto from './images/usuario1.jpg'
+import yuriFoto from './images/usuario2.jpg'
+import gabrielFoto from './images/usuario3.jpg'
 
 const u1 = {
     ID: 0,
     Nome: 'Yuri',
-    FotoPerfil: '',
+    FotoPerfil: yuriFoto,
+    UltimaVez: '4 de jun de 2019',
 }
 const u2 = {
     ID: 1,
     Nome: 'Henrique',
-    FotoPerfil: usuario1Img,
+    FotoPerfil: henriqFoto,
+    UltimaVez: '47 minutos atrás',
 }
 const u3 = {
-    ID: 3,
+    ID: 2,
     Nome: 'Gabriel',
-    FotoPerfil: '',
+    FotoPerfil: gabrielFoto,
+    UltimaVez: '7 horas atrás',
 }
 
 const m1 = {
@@ -47,16 +52,32 @@ const m5 = {
     AutorID: 1,
     Conteudo: 'xauuuuuuuu',
 }
+const m6 = {
+    ID: 5,
+    ChatID: 0,
+    AutorID: 2,
+    Conteudo: 'eae galera bora fazer trabalho?',
+}
+const m7 = {
+    ID: 6,
+    ChatID: 0,
+    AutorID: 2,
+    Conteudo: 'semestre ta acabandooooo uhuuuuu',
+}
+const m8 = {
+    ID: 7,
+    ChatID: 0,
+    AutorID: 1,
+    Conteudo: 'cala boca corno',
+}
 
 const c1 = {
     ID: 0,
-    Nome: 'Chat 1',
+    Nome: 'Klub dos TeleZapCornos da UnB',
     Usuarios: [
         u1, u2, u3
     ],
-    Mensagens: [
-        m1, m3
-    ],
+    Mensagens: [],
     FotoPerfil: chat1Img,
 }
 
@@ -75,7 +96,9 @@ const c2 = {
 const c3 = {
     ID: 2,
     Nome: 'Gabriel',
-    Usuarios: [],
+    Usuarios: [
+        u3, u1
+    ],
     Mensagens: [],
     FotoPerfil: '',
 }
@@ -85,7 +108,7 @@ export const StubUsuarios = [
 ]
 
 export const StubMensagens = [
-    m1, m2, m3, m4
+    m1, m2, m3, m4, m5, m6, m7, m8
 ]
 
 export const StubChats = [
