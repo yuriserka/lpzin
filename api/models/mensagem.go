@@ -1,9 +1,9 @@
 package models
 
 type Mensagem struct {
-	ID        int    `json:"msgID"`
-	ChatID    int    `json:"chatID"`
-	Autor     int    `json:"autorID"`
-	Conteudo  string `json:"conteudo"`
-	HoraEnvio string `json:"hora_enviada"`
+	ID        int    `json:"ID"`
+	ChatID    int    `json:"ChatID"`
+	Autor     int    `json:"AutorID"`
+	Conteudo  string `json:"Conteudo"`
+	HoraEnvio string `json:"HoraEnviada"`
 }

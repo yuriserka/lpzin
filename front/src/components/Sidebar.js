@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export class Sidebar extends Component {
   getDivStyle = () => {
     return {
-      maxWidth: '31%',
+      width: '30%',
       minWidth: '175px',
       height: '100%',
       background: 'white',

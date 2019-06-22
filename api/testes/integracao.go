@@ -3,89 +3,97 @@ package testes
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 	"strings"
 
-	"github.com/yuriserka/lpzin/api/models"
-	"github.com/yuriserka/lpzin/schema"
-
-	"github.com/yuriserka/lpzin/api/common"
-
-	"github.com/yuriserka/lpzin/api/repositories"
+	"github.com/yuriserka/lpzin/api/repositorios"
+	"github.com/yuriserka/lpzin/api/utils"
 )
 
 const (
-	entrar    = 1
-	cadastrar = 2
-	getmsgs   = 3
-	sair      = 4
-)
-
-var (
-	repUsr = repositories.RepUser{}
-	repCht = repositories.RepChat{}
-	repMsg = repositories.RepMessage{}
+	entrar     = iota + 1
+	cadastrar  = iota + 1
+	criarChat  = iota + 1
+	getmsgs    = iota + 1
+	getchatsid = iota + 1
+	sair       = iota + 1
 )
 
 // Init simula de forma simplificada a interação com o banco de dados do sistema a fim de testar suas
 // funcionalidades
 func Init() {
-	db, err := common.ConnDB()
-	if err != nil {
-		panic(fmt.Sprintf("db: %v", err))
-	}
-
-	defer db.Close()
-
-	schema.DropSchema(db)
-	schema.CreateSchema(db)
-
-	repUsr.Init(db)
-	repCht.Init(db)
-	repMsg.Init(db)
-
-	idAdm := repUsr.SetUser("AdmCorno", "kkk bovino", "corno", "corno123")
-	repCht.SetChat("Grupo de Testes", idAdm)
-
+	repositorios.DropaEsquema()
+	repositorios.CriaEsquema()
 	home()
 }
 
 func home() {
+	const (
+		kusar                 = iota + 1
+		kentrar               = iota + 1
+		kcadastrar            = iota + 1
+		kcriarChat            = iota + 1
+		kgetMsgs              = iota + 1
+		kgetChatsParticipante = iota + 1
+		ksair                 = iota + 1
+	)
+	menu := map[int]string{
+		kusar:                 "Usar o Chat",
+		kentrar:               "Entrar em um Chat",
+		kcadastrar:            "Cadastrar-se",
+		kcriarChat:            "Criar Chat",
+		kgetMsgs:              "Ver Mensagens",
+		kgetChatsParticipante: "Ver Chats que participa",
+		ksair:                 "Voltar",
+	}
 	var opt int
-	for opt != sair {
-		fmt.Print("\t\tTeleZap simples\n", "Escolha uma das opções abaixo:\n")
-		fmt.Printf("[%d] Entrar\n[%d] Cadastrar\n[%d] Recuperar Mensagens do usuário\n[%d] Sair\n\topção: ", entrar, cadastrar, getmsgs, sair)
+	id := -1
+	sortedIndexes := utils.OrdenaMap(menu)
+	for opt != ksair {
+		fmt.Println("\tTeste de Integração")
 
+		for _, i := range sortedIndexes {
+			fmt.Printf("[%d] %s\n", i, menu[i])
+		}
+
+		fmt.Print("\tOpcao: ")
 		switch fmt.Scanf("%d\n", &opt); opt {
-		case entrar:
-			if usr, logado := autenticarTest(); logado {
-				entrarNoChatTest(usr)
-			} else {
-				fmt.Println("Pera lá amigão seu username ou senha está incorreto")
-			}
-		case cadastrar:
-			cadastrarTest()
-		case getmsgs:
-			getUserMsgsTest()
+		case kentrar:
+			entrarNoChatTest(id)
+		case kusar:
+			usarChatTest(id)
+		case kcadastrar:
+			id = cadastrarTest()
+		case kcriarChat:
+			criarChatTest()
+		case kgetMsgs:
+			getUserMsgsTest(id)
+		case kgetChatsParticipante:
+			getUserChatsIDTest(id)
 		}
 	}
 }
 
-func entrarNoChatTest(usr models.Usuario) {
-	const chatIDStub = 1
-	if usr.ID != 1 {
-		repCht.SetChatUser(chatIDStub, usr.ID)
-	}
-	chat := repCht.GetChat(chatIDStub)
-	for {
-		msgs := repCht.GetChatMsgs(chatIDStub)
+func usarChatTest(id int) {
+	var chatIDStub int
+	fmt.Printf("Digite o id do chat: ")
+	fmt.Scanf("%d\n", &chatIDStub)
 
+	chat, err := repositorios.GetChat(chatIDStub)
+	if err != nil {
+		fmt.Println(err.Error() + "get Chat")
+		return
+	}
+	for {
+		msgs, err := repositorios.GetChatMensagens(chatIDStub)
+		if err != nil {
+			fmt.Println(err.Error() + "in for")
+			return
+		}
 		fmt.Printf("\tta no chat %4s amigo\n", chat.Nome)
 
 		for _, v := range msgs {
-			u := repUsr.GetUser(v.Autor)
+			u, _ := repositorios.GetUsuario(v.Autor)
 			fmt.Printf("%s => %-6s %-10s\n", u.Nome, v.Conteudo, v.HoraEnvio)
 		}
 
@@ -98,38 +106,23 @@ func entrarNoChatTest(usr models.Usuario) {
 			break
 		}
 
-		repMsg.SetMsg(usr.ID, chat.ID, msg)
+		_, errr := repositorios.SetMensagem(msg, chatIDStub, id)
+		if errr != nil {
+			fmt.Println(errr.Error())
+			return
+		}
 	}
 }
 
-func autenticarTest() (models.Usuario, bool) {
-	var (
-		username string
-		id       int
-		usuario  models.Usuario
-		senha    string
-		reader   *bufio.Reader
-	)
+func entrarNoChatTest(id int) {
+	var chatIDStub int
+	fmt.Printf("Digite o id do chat que deseja entrar: ")
+	fmt.Scanf("%d\n", &chatIDStub)
 
-	fmt.Println("\tAutenticar-se")
-	fmt.Print("digite seu username: ")
-	reader = bufio.NewReader(os.Stdin)
-	username, _ = reader.ReadString('\n')
-	username = username[:len(username)-2]
-
-	fmt.Print("digite sua senha:")
-	reader = bufio.NewReader(os.Stdin)
-	senha, _ = reader.ReadString('\n')
-	senha = senha[:len(senha)-2]
-
-	id = repUsr.GetUserID(username)
-
-	logado := repUsr.UserAuth(username, senha)
-	if logado {
-		usuario = repUsr.GetUser(id)
-		return usuario, logado
+	if err := repositorios.AddChatMembro(chatIDStub, id); err != nil {
+		fmt.Println(err.Error())
+		return
 	}
-	return usuario, logado
 }
 
 func cadastrarTest() int {
@@ -155,17 +148,46 @@ func cadastrarTest() int {
 	senha, _ = reader.ReadString('\n')
 	senha = senha[:len(senha)-2]
 
-	return repUsr.SetUser(nome, "FOTO DO USUARIO", username, senha)
+	id, e := repositorios.SetUsuario(nome, "", username, senha)
+	if e != nil {
+		fmt.Println(e.Error())
+	}
+	return id
 }
 
-func getUserMsgsTest() {
-	fmt.Println("\tDigite seu ID: ")
-	var id string
-	fmt.Scanln(&id)
-	aux, err := strconv.Atoi(id)
-	if err != nil {
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
+func getUserMsgsTest(id int) {
+	if id < 0 {
+		fmt.Println("cadastre-se primeiro")
+		return
 	}
-	msgs := repUsr.GetUserMsgs(aux)
+	msgs, err := repositorios.GetMensagensUsuario(id)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 	fmt.Println(msgs)
+}
+
+func getUserChatsIDTest(id int) {
+	if id < 0 {
+		fmt.Println("cadastre-se primeiro")
+		return
+	}
+}
+
+func criarChatTest() {
+	var (
+		reader *bufio.Reader
+		nome   string
+	)
+	fmt.Print("Digite o nome do chat: ")
+	reader = bufio.NewReader(os.Stdin)
+	nome, _ = reader.ReadString('\n')
+	nome = nome[:len(nome)-2]
+
+	_, err := repositorios.SetChat(nome)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 }

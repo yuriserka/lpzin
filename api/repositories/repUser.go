@@ -1,173 +1,207 @@
 package repositories
 
-import (
-	"database/sql"
-	"fmt"
-	"log"
+// import (
+// 	"database/sql"
+// 	"fmt"
+// 	"log"
 
-	"github.com/yuriserka/lpzin/api/models"
-	"golang.org/x/crypto/bcrypt"
-)
+// 	"github.com/pkg/errors"
 
-// RepUser contém a instância do BD a ser utilizada
-type RepUser struct {
-	db *sql.DB
-}
+// 	"github.com/yuriserka/lpzin/api/models"
+// 	"golang.org/x/crypto/bcrypt"
+// )
 
-// Init recebe a instância do banco de dados e inicializa na struct
-func (rep *RepUser) Init(db *sql.DB) {
-	rep.db = db
-}
+// // RepUser contém a instância do BD a ser utilizada
+// type RepUser struct {
+// 	db *sql.DB
+// }
 
-// SetUser cria um usuário no banco de dados e retorna o id do usuário criado
-func (rep *RepUser) SetUser(nome, foto, username, senha string) int {
-	if len(nome) > 100 {
-		log.Panic("O nome deve possuir até 100 caracteres")
-	}
-	if len(username) > 100 {
-		log.Panic("O nome de usuário deve possuir até 100 caracteres")
-	}
+// // Init recebe a instância do banco de dados e inicializa na struct
+// func (rep *RepUser) Init(db *sql.DB) {
+// 	rep.db = db
+// }
 
-	var (
-		hash []byte
-		err  error
-	)
+// // SetUser cria um usuário no banco de dados e retorna o id do usuário criado
+// func (rep *RepUser) SetUser(nome, foto, username, senha string) int {
+// 	if len(nome) > 100 {
+// 		log.Panic("O nome deve possuir até 100 caracteres")
+// 	}
+// 	if len(username) > 100 {
+// 		log.Panic("O nome de usuário deve possuir até 100 caracteres")
+// 	}
 
-	hash, err = encryptPass([]byte(senha))
-	if err != nil {
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
+// 	var (
+// 		hash []byte
+// 		err  error
+// 	)
 
-	sqlStatement := `
-	INSERT INTO Usuario (nome, foto, username, senha)
-	VALUES ($1, $2, $3, $4)
-	RETURNING id`
-	id := 0
+// 	hash, err = encryptPass([]byte(senha))
+// 	if err != nil {
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
 
-	err = rep.db.QueryRow(sqlStatement, nome, foto, username, string(hash)).Scan(&id)
-	if err != nil {
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
-	fmt.Println("ID do usuário criado: ", id)
-	return id
-}
+// 	sqlStatement := `
+// 	INSERT INTO Usuario (nome, foto, username, senha)
+// 	VALUES ($1, $2, $3, $4)
+// 	RETURNING id`
+// 	id := 0
 
-// GetUser retorna um usuário de acordo com a ID passada
-func (rep *RepUser) GetUser(userid int) models.Usuario {
-	var (
-		id        int
-		nome      string
-		foto      string
-		username  string
-		ultimaVez string
-	)
-	sqlStatement := `SELECT id, nome, foto, username, ultima_vez FROM Usuario WHERE id = $1`
-	value := rep.db.QueryRow(sqlStatement, userid)
+// 	err = rep.db.QueryRow(sqlStatement, nome, foto, username, string(hash)).Scan(&id)
+// 	if err != nil {
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
+// 	fmt.Println("ID do usuário criado: ", id)
+// 	return id
+// }
 
-	switch err := value.Scan(&id, &nome, &foto, &username, &ultimaVez); err {
-	case sql.ErrNoRows:
-		fmt.Println("Usuário não encontrado")
-	case nil:
-	default:
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
+// // GetUser retorna um usuário de acordo com a ID passada
+// func (rep *RepUser) GetUser(userid int) (*models.Usuario, error) {
+// 	var (
+// 		id        int
+// 		nome      string
+// 		foto      string
+// 		username  string
+// 		ultimaVez string
+// 	)
+// 	sqlStatement := `SELECT id, nome, foto, username, ultima_vez FROM Usuario WHERE id = $1`
+// 	value := rep.db.QueryRow(sqlStatement, userid)
 
-	user := models.Usuario{ID: id, Nome: nome, FotoPerfil: foto, Username: username, UltimaVez: ultimaVez}
+// 	switch err := value.Scan(&id, &nome, &foto, &username, &ultimaVez); err {
+// 	case sql.ErrNoRows:
+// 		return nil, errors.New("Usuário não encontrado")
+// 	case nil:
+// 	default:
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
 
-	return user
-}
+// 	user := &models.Usuario{ID: id, Nome: nome, FotoPerfil: foto, Username: username, UltimaVez: ultimaVez}
 
-// GetUserID recebe o username do usuário e retorna o id
-func (rep *RepUser) GetUserID(username string) int {
-	id := -1
-	sqlStatement := `
-	SELECT id FROM Usuario WHERE username = $1
-	`
-	value := rep.db.QueryRow(sqlStatement, username)
+// 	return user, nil
+// }
 
-	switch err := value.Scan(&id); err {
-	case sql.ErrNoRows:
-		fmt.Println("Usuário não encontrado")
-	case nil:
-	default:
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
-	return id
-}
+// // GetUserID recebe o username do usuário e retorna o id
+// func (rep *RepUser) GetUserID(username string) int {
+// 	id := -1
+// 	sqlStatement := `
+// 	SELECT id FROM Usuario WHERE username = $1
+// 	`
+// 	value := rep.db.QueryRow(sqlStatement, username)
 
-// GetUserMsgs retorna todas as mensagens de um usuário
-func (rep *RepUser) GetUserMsgs(userid int) []models.Mensagem {
-	sqlStatement := `
-	SELECT IDMsg, Hr_env, Msg, IDChat, IDUsuario
-	FROM Mensagem WHERE IDUsuario = $1
-	`
-	rows, err := rep.db.Query(sqlStatement, userid)
-	switch err {
-	case sql.ErrNoRows:
-		fmt.Println("Mensagens não encontradas")
-	case nil:
-	default:
-		log.Panic(fmt.Sprintf("Error %+v\n", err))
-	}
-	defer rows.Close()
+// 	switch err := value.Scan(&id); err {
+// 	case sql.ErrNoRows:
+// 		fmt.Println("Usuário não encontrado")
+// 	case nil:
+// 	default:
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
+// 	return id
+// }
 
-	msgs, err := getUserMsgsFromRows(rows, rep.db)
+// // GetUserMsgs retorna todas as mensagens de um usuário
+// func (rep *RepUser) GetUserMsgs(userid int) []models.Mensagem {
+// 	sqlStatement := `
+// 	SELECT IDMsg, Hr_env, Msg, IDChat, IDUsuario
+// 	FROM Mensagem WHERE IDUsuario = $1
+// 	`
+// 	rows, err := rep.db.Query(sqlStatement, userid)
+// 	switch err {
+// 	case sql.ErrNoRows:
+// 		fmt.Println("Mensagens não encontradas")
+// 	case nil:
+// 	default:
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
+// 	defer rows.Close()
 
-	return msgs
-}
+// 	msgs, err := getUserMsgsFromRows(rows, rep.db)
 
-// UserAuth recebe o username e senha, retorna true se a senha for correta e false caso contrário
-func (rep *RepUser) UserAuth(username, senha string) bool {
-	auth := validatePass(rep.db, username, senha)
-	return auth
-}
+// 	return msgs
+// }
 
-func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) {
-	msgs := []models.Mensagem{}
-	var msg models.Mensagem
-	for rows.Next() {
-		err := rows.Scan(&msg.ID, &msg.HoraEnvio, &msg.Conteudo, &msg.ChatID, &msg.Autor)
-		if err != nil {
-			return nil, err
-		}
-		msgs = append(msgs, msg)
-	}
-	return msgs, nil
-}
+// func (rep *RepUser) GetUserChats(userid int) []int {
+// 	sqlStatement := `
+// 	SELECT idchat FROM chat_tem_usuario WHERE IDUsuario = $1
+// 	`
+// 	rows, err := rep.db.Query(sqlStatement, userid)
+// 	switch err {
+// 	case sql.ErrNoRows:
+// 		fmt.Println("Chats não encontrados")
+// 	case nil:
+// 	default:
+// 		log.Panic(fmt.Sprintf("Error %+v\n", err))
+// 	}
+// 	defer rows.Close()
 
-func encryptPass(senha []byte) ([]byte, error) {
-	hash, err := bcrypt.GenerateFromPassword(senha, bcrypt.DefaultCost)
-	return hash, err
-}
+// 	chatsIDs, err := getUserChatsIDsFromRows(rows, rep.db)
 
-func getHashPassword(db *sql.DB, username string) (string, error) {
-	sqlStatement := `
-	SELECT senha FROM Usuario
-	WHERE username = $1
-	`
-	var hash string
+// 	return chatsIDs
+// }
 
-	err := db.QueryRow(sqlStatement, username).Scan(&hash)
-	return hash, err
-}
+// // UserAuth recebe o username e senha, retorna true se a senha for correta e false caso contrário
+// func (rep *RepUser) UserAuth(username, senha string) bool {
+// 	auth := validatePass(rep.db, username, senha)
+// 	return auth
+// }
 
-func validatePass(db *sql.DB, username, senha string) bool {
-	var (
-		pass     []byte
-		hashpass string
-		err      error
-	)
+// func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]models.Mensagem, error) {
+// 	msgs := []models.Mensagem{}
+// 	var msg models.Mensagem
+// 	for rows.Next() {
+// 		err := rows.Scan(&msg.ID, &msg.HoraEnvio, &msg.Conteudo, &msg.ChatID, &msg.Autor)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		msgs = append(msgs, msg)
+// 	}
+// 	return msgs, nil
+// }
 
-	pass = []byte(senha)
-	hashpass, err = getHashPassword(db, username)
-	if err != nil {
-		log.Panic("Usuário não existente")
-	}
+// func getUserChatsIDsFromRows(rows *sql.Rows, db *sql.DB) ([]int, error) {
+// 	var chats []int
+// 	var chatid int
+// 	for rows.Next() {
+// 		err := rows.Scan(&chatid)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		chats = append(chats, chatid)
+// 	}
+// 	return chats, nil
+// }
 
-	err = bcrypt.CompareHashAndPassword([]byte(hashpass), pass)
-	if err != nil {
-		return false
-	}
+// func encryptPass(senha []byte) ([]byte, error) {
+// 	hash, err := bcrypt.GenerateFromPassword(senha, bcrypt.DefaultCost)
+// 	return hash, err
+// }
 
-	return true
-}
+// func getHashPassword(db *sql.DB, username string) (string, error) {
+// 	sqlStatement := `
+// 	SELECT senha FROM Usuario
+// 	WHERE username = $1
+// 	`
+// 	var hash string
+
+// 	err := db.QueryRow(sqlStatement, username).Scan(&hash)
+// 	return hash, err
+// }
+
+// func validatePass(db *sql.DB, username, senha string) bool {
+// 	var (
+// 		pass     []byte
+// 		hashpass string
+// 		err      error
+// 	)
+
+// 	pass = []byte(senha)
+// 	hashpass, err = getHashPassword(db, username)
+// 	if err != nil {
+// 		log.Panic("Usuário não existente")
+// 	}
+
+// 	err = bcrypt.CompareHashAndPassword([]byte(hashpass), pass)
+// 	if err != nil {
+// 		return false
+// 	}
+
+// 	return true
+// }

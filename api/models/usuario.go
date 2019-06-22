@@ -9,11 +9,12 @@ import (
 )
 
 type Usuario struct {
-	ID         int    `json:"id"`
-	Nome       string `json:"nome"`
-	FotoPerfil string `json:"fotoPerfil"`
-	Username   string `json:"username"`
-	UltimaVez  string `json:"ultimaVez"`
+	ID         int    `json:"ID"`
+	Nome       string `json:"Nome"`
+	FotoPerfil string `json:"FotoPerfil"`
+	Username   string `json:"Username"`
+	UltimaVez  string `json:"UltimaVez"`
+	Senha      string `json:"Senha"`
 }
 
 func getImage(id int) string {
@@ -35,11 +36,4 @@ func getImage(id int) string {
 	imgBase64Str := base64.StdEncoding.EncodeToString(buf)
 
 	return "data:image/png;base64, " + imgBase64Str
-}
-
-var Usuarios = []Usuario{
-	Usuario{ID: 0, Nome: "Henriquezera", FotoPerfil: getImage(0)},
-	Usuario{ID: 1, Nome: "Ericzera", FotoPerfil: getImage(1)},
-	Usuario{ID: 2, Nome: "Dalton", FotoPerfil: getImage(2)},
-	Usuario{ID: 3, Nome: "Dalton_2", FotoPerfil: getImage(2)},
 }

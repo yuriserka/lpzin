@@ -63,7 +63,6 @@ class ListaMensagens extends React.Component {
 }
 
 ListaMensagens.propTypes = {
-  mensagens: PropTypes.array.isRequired,
   myID: PropTypes.number.isRequired,
   chatAtual: PropTypes.object,
   ehGrupo: PropTypes.bool.isRequired,
