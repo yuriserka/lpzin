@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import CaixaEnvio from './components/CaixaEnvio';
 import Header from './components/Header';
 import axios from 'axios';
+import { StubChats, StubUsuarios } from './stubs'
 
 class App extends React.Component {
   constructor() {
@@ -14,6 +15,9 @@ class App extends React.Component {
       error: null,
       usuarioAtual: null,
       loaded: false,
+      usuariosAtivos: null,
+      stubchats: StubChats,
+      stubusuarios: StubUsuarios,
     };
   }
 
@@ -34,6 +38,53 @@ class App extends React.Component {
       borderRight: '1px solid #dfe5ec',
       overflow: 'hidden',
     }
+  }
+
+  StubGetChat = (id) => {
+    this.setState({
+      chatAtual: this.state.chats[id]
+    })
+  }
+
+  StubGetChats = () => {
+    this.setState({
+      chats: this.state.stubchats
+    })
+  }
+
+  StubGetUsuarioAtual = () => {
+    this.setState({
+      usuarioAtual: this.state.stubusuarios[0]
+    }, this.StubGetChats)
+  }
+
+  StubGetUsuariosAtivos = () => {
+    this.setState({
+      usuariosAtivos: this.state.stubusuarios
+    })
+  }
+
+  StubAddMensagem = (msg) => {
+    this.setState({
+      chats: this.state.chats.map(c => {
+        if (c.ID === msg.ChatID) {
+          c.Mensagens.push(msg)
+        }
+        return c
+      })
+    })
+  }
+
+  StubAddChat = (chat) => {
+    chat.Usuarios = []
+    chat.Mensagens = []
+    chat.Usuarios.push(StubUsuarios.find(u => u.ID === chat.CriadorID), StubUsuarios[2])
+    delete chat.CriadorID
+
+    this.state.chats.push(chat)
+    this.setState({
+      chats: this.state.chats,
+    })
   }
 
   getChat = (IDchatClicado) => {
@@ -99,8 +150,8 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    this.getUsuarioAtual()
-
+    await this.StubGetUsuarioAtual()
+    await this.StubGetUsuariosAtivos()
     this.setState({ loaded: true })
   }
 
@@ -114,11 +165,13 @@ class App extends React.Component {
       return (
         <div >
           {
-            usuarioAtual && this.state.chats && <div className="App" style={this.getAppStyle()}>
+            usuarioAtual && this.state.chats && this.state.usuariosAtivos &&
+            <div className="App" style={this.getAppStyle()}>
               <Header chatAtual={chatAtual} usuarioAtual={usuarioAtual} ehGrupo={ehGrupo} />
-              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.getChat} />
+              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.StubGetChat}
+                addChat={this.StubAddChat} usuariosAtivos={this.state.usuariosAtivos} />
               <ListaMensagens chatAtual={chatAtual} myID={usuarioAtual.ID} ehGrupo={ehGrupo} />
-              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.addMensagem}
+              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.StubAddMensagem}
                 ehGrupo={ehGrupo} />
             </div>
           }

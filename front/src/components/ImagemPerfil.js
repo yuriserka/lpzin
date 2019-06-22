@@ -5,8 +5,8 @@ export class ImagemPerfil extends React.Component {
   ContainerImagem = () => {
     return {
       display: 'flex',
-      width: '55px',
-      height: '55px',
+      width: `${this.props.w ? String(this.props.w) : '55'}px`,
+      height: `${this.props.h ? String(this.props.h) : '55'}px`,
       overflow: 'hidden',
       borderRadius: '50%',
       zIndex: '1',
@@ -47,6 +47,8 @@ export class ImagemPerfil extends React.Component {
 ImagemPerfil.propTypes = {
   obj: PropTypes.object.isRequired,
   ehGrupo: PropTypes.bool,
+  w: PropTypes.number,
+  h: PropTypes.number,
 }
 
 export default ImagemPerfil

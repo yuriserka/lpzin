@@ -25,7 +25,7 @@ func RecuperarChat(c *gin.Context) {
 func InserirChat(c *gin.Context) {
 	obj := struct {
 		Nome       string
-		criadorID  int
+		CriadorID  int
 		FotoPerfil string
 	}{}
 	err := c.BindJSON(&obj)
@@ -36,7 +36,7 @@ func InserirChat(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusNoContent, err.Error())
 		} else {
-			repositorios.AddChatMembro(chatID, obj.criadorID)
+			repositorios.AddChatMembro(chatID, obj.CriadorID)
 		}
 	}
 }

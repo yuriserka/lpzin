@@ -21,6 +21,24 @@ const u3 = {
     FotoPerfil: gabrielFoto,
     UltimaVez: '7 horas atrás',
 }
+const u4 = {
+    ID: 3,
+    Nome: 'E',
+    FotoPerfil: gabrielFoto,
+    UltimaVez: '7 horas atrás',
+}
+const u5 = {
+    ID: 4,
+    Nome: 'A',
+    FotoPerfil: gabrielFoto,
+    UltimaVez: '7 horas atrás',
+}
+const u6 = {
+    ID: 5,
+    Nome: 'D',
+    FotoPerfil: gabrielFoto,
+    UltimaVez: '7 horas atrás',
+}
 
 const m1 = {
     ID: 0,
@@ -106,7 +124,7 @@ const c3 = {
 }
 
 export const StubUsuarios = [
-    u1, u2, u3
+    u1, u2, u3, u4, u5, u6
 ]
 
 export const StubMensagens = [
