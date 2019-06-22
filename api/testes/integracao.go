@@ -3,10 +3,15 @@ package testes
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 	"strings"
 
-	"github.com/yuriserka/lpzin/api/repositorios"
+	"github.com/yuriserka/lpzin/api/common"
+	"github.com/yuriserka/lpzin/api/repositories"
+	"github.com/yuriserka/lpzin/schema"
+
 	"github.com/yuriserka/lpzin/api/utils"
 )
 
@@ -19,11 +24,27 @@ const (
 	sair       = iota + 1
 )
 
+var (
+	db, err = common.ConnDB()
+	repChat = &repositories.RepChat{}
+	repUser = &repositories.RepUser{}
+	repMsg  = &repositories.RepMessage{}
+)
+
 // Init simula de forma simplificada a interação com o banco de dados do sistema a fim de testar suas
 // funcionalidades
 func Init() {
-	repositorios.DropaEsquema()
-	repositorios.CriaEsquema()
+	if err != nil {
+		log.Panic(fmt.Sprintf("db: %v", err))
+	}
+
+	schema.DropSchema(db) // método temporário para realizar testes
+	schema.CreateSchema(db)
+
+	defer db.Close()
+	repChat.Init(db)
+	repUser.Init(db)
+	repMsg.Init(db)
 	home()
 }
 
@@ -79,13 +100,13 @@ func usarChatTest(id int) {
 	fmt.Printf("Digite o id do chat: ")
 	fmt.Scanf("%d\n", &chatIDStub)
 
-	chat, err := repositorios.GetChat(chatIDStub)
+	chat, err := repChat.GetChat(chatIDStub)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	for {
-		msgs, err := repositorios.GetMensagensChat(chatIDStub)
+		msgs, err := repChat.GetChatMsgs(chatIDStub)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
@@ -93,7 +114,7 @@ func usarChatTest(id int) {
 		fmt.Printf("\tta no chat %4s amigo\n", chat.Nome)
 
 		for _, v := range msgs {
-			u, _ := repositorios.GetUsuario(v.Autor)
+			u, _ := repUser.GetUser(v.Autor)
 			fmt.Printf("%s => %-6s %-10s\n", u.Nome, v.Conteudo, v.HoraEnvio)
 		}
 
@@ -106,7 +127,7 @@ func usarChatTest(id int) {
 			break
 		}
 
-		_, errr := repositorios.SetMensagem(msg, chatIDStub, id)
+		_, errr := repMsg.SetMsg(id, chatIDStub, msg)
 		if errr != nil {
 			fmt.Println(errr.Error())
 			return
@@ -119,7 +140,7 @@ func entrarNoChatTest(id int) {
 	fmt.Printf("Digite o id do chat que deseja entrar: ")
 	fmt.Scanf("%d\n", &chatIDStub)
 
-	if err := repositorios.AddChatMembro(chatIDStub, id); err != nil {
+	if err := repChat.SetUserInChat(chatIDStub, id); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
@@ -148,7 +169,7 @@ func cadastrarTest() int {
 	senha, _ = reader.ReadString('\n')
 	senha = senha[:len(senha)-2]
 
-	id, e := repositorios.SetUsuario(nome, "", username, senha)
+	id, e := repUser.SetUser(nome, "", username, senha)
 	if e != nil {
 		fmt.Println(e.Error())
 	}
@@ -160,7 +181,7 @@ func getUserMsgsTest(id int) {
 		fmt.Println("cadastre-se primeiro")
 		return
 	}
-	msgs, err := repositorios.GetMensagensUsuario(id)
+	msgs, err := repUser.GetUserMsgs(id)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -179,13 +200,20 @@ func criarChatTest() {
 	var (
 		reader *bufio.Reader
 		nome   string
+		userid int
 	)
 	fmt.Print("Digite o nome do chat: ")
 	reader = bufio.NewReader(os.Stdin)
 	nome, _ = reader.ReadString('\n')
 	nome = nome[:len(nome)-2]
 
-	_, err := repositorios.SetChat(nome)
+	fmt.Println()
+	fmt.Print("Digite o id do criador do chat: ")
+	reader = bufio.NewReader(os.Stdin)
+	id, _ := reader.ReadString('\n')
+	userid, _ = strconv.Atoi(id[:len(id)-2])
+
+	_, err := repChat.SetChat(nome, userid)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
