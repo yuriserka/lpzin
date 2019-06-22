@@ -1,10 +1,8 @@
 package routers
 
 import (
-	"fmt"
-	"log"
+	"database/sql"
 
-	"github.com/yuriserka/lpzin/api/common"
 	"github.com/yuriserka/lpzin/api/controllers"
 	"github.com/yuriserka/lpzin/schema"
 
@@ -14,15 +12,10 @@ import (
 
 var router *gin.Engine
 
-func init() {
+// Init irá criar as rotas do aplicativo e também servirá a pasta estatica do front
+func Init(db *sql.DB) {
 	router = gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./front/build", true)))
-
-	db, err := common.ConnDB()
-	if err != nil {
-		log.Panic(fmt.Sprintf("db: %v", err))
-	}
-	defer db.Close()
 
 	userController := &controllers.UserController{}
 	userController.Init(db)

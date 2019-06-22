@@ -65,7 +65,7 @@ export class CaixaEnvio extends React.Component {
               onKeyDown={this.postHandler} />
           </div>
         </div>
-        <ImagemPerfil obj={chat} />
+        <ImagemPerfil obj={chat} ehGrupo={this.props.ehGrupo} />
       </div>
     )
   }
@@ -75,6 +75,7 @@ CaixaEnvio.propTypes = {
   usuarioAtual: PropTypes.object,
   chatAtual: PropTypes.object,
   addMensagem: PropTypes.func.isRequired,
+  ehGrupo: PropTypes.bool.isRequired,
 }
 
 export default CaixaEnvio

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yuriserka/lpzin/api/repositories"
@@ -49,6 +50,7 @@ func (msgctrl *MessageController) RecuperarMensagens(c *gin.Context) {
 		if err == nil {
 			c.JSON(http.StatusOK, msgs)
 		} else {
+			fmt.Println(err)
 			c.JSON(http.StatusNotFound, err.Error())
 		}
 	} else {

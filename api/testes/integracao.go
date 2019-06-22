@@ -38,7 +38,7 @@ func Init() {
 		log.Panic(fmt.Sprintf("db: %v", err))
 	}
 
-	schema.DropSchema(db) // método temporário para realizar testes
+	// schema.DropSchema(db) // método temporário para realizar testes
 	schema.CreateSchema(db)
 
 	defer db.Close()
@@ -182,11 +182,14 @@ func getUserMsgsTest(id int) {
 		return
 	}
 	msgs, err := repUser.GetUserMsgs(id)
+	if msgs == nil {
+		fmt.Println("kkkkk")
+	}
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println(msgs)
+	//fmt.Println(msgs)
 }
 
 func getUserChatsIDTest(id int) {

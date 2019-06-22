@@ -187,6 +187,9 @@ func getChatsFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Chat, error) {
 		}
 		chats = append(chats, chat)
 	}
+	if chats == nil {
+		return nil, errors.New("Não há Chats")
+	}
 	return chats, nil
 }
 

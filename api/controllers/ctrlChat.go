@@ -28,18 +28,18 @@ func (chatctrl *ChatController) InserirChat(c *gin.Context) {
 	var err error
 	obj := struct {
 		Nome       string
-		criadorID  int
+		CriadorID  int
 		FotoPerfil string
 	}{}
 	err = c.BindJSON(&obj)
 	if err != nil {
 		c.JSON(http.StatusNoContent, err.Error())
 	} else {
-		chatID, err := chatctrl.chatRepository.SetChat(obj.Nome, obj.criadorID)
+		chatID, err := chatctrl.chatRepository.SetChat(obj.Nome, obj.CriadorID)
 		if err != nil {
 			c.JSON(http.StatusNoContent, err.Error())
 		} else {
-			err = chatctrl.chatRepository.SetUserInChat(chatID, obj.criadorID)
+			err = chatctrl.chatRepository.SetUserInChat(chatID, obj.CriadorID)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, err.Error())
 			}

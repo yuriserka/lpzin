@@ -93,7 +93,7 @@ class App extends React.Component {
       (res) => {
         this.setState({
           chatAtual: res.data
-        }, () => { console.log('GetChat: this.chatAtual terminou', this.chatAtual) })
+        }, () => { console.log('GetChat: this.chatAtual terminou', this.state.chatAtual) })
       },
       (error) => {
         this.setState({
@@ -110,7 +110,14 @@ class App extends React.Component {
       AutorID: msg.AutorID,
     })
       .then(
-        (res) => { },
+        (res) => {
+          const { chats } = this.state
+          const chatAlvo = chats.find(c => c.ID === msg.ChatID)
+          console.log('chatAlvo', chatAlvo)
+          chatAlvo.Mensagens.push(msg)
+          console.log('vendo chats dnv', chats)
+          this.setState({ chatAtual: chatAlvo })
+        },
         (error) => {
           this.setState({ error: error })
         }
@@ -150,8 +157,9 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    await this.StubGetUsuarioAtual()
+    await this.getUsuarioAtual()
     await this.StubGetUsuariosAtivos()
+
     this.setState({ loaded: true })
   }
 
@@ -168,10 +176,10 @@ class App extends React.Component {
             usuarioAtual && this.state.chats && this.state.usuariosAtivos &&
             <div className="App" style={this.getAppStyle()}>
               <Header chatAtual={chatAtual} usuarioAtual={usuarioAtual} ehGrupo={ehGrupo} />
-              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.StubGetChat}
+              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.getChat}
                 addChat={this.StubAddChat} usuariosAtivos={this.state.usuariosAtivos} />
               <ListaMensagens chatAtual={chatAtual} myID={usuarioAtual.ID} ehGrupo={ehGrupo} />
-              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.StubAddMensagem}
+              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.addMensagem}
                 ehGrupo={ehGrupo} />
             </div>
           }

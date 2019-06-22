@@ -2,9 +2,8 @@ package repositories
 
 import (
 	"database/sql"
-	"log"
-
-	"github.com/pkg/errors"
+	"fmt"
+	"errors"
 
 	"github.com/yuriserka/lpzin/api/models"
 	"golang.org/x/crypto/bcrypt"
@@ -81,7 +80,7 @@ func (rep *RepUser) GetUser(userid int) (*models.Usuario, error) {
 
 func (rep *RepUser) GetAllUsers() ([]*models.Usuario, error) {
 	sqlStatement := `
-	select id from usuario 
+	select id from usuario
 	`
 	rows, err := rep.db.Query(sqlStatement)
 	if err != nil {
@@ -160,12 +159,15 @@ func (rep *RepUser) GetUserChats(userid int) ([]*models.Chat, error) {
 
 // UserAuth recebe o username e senha, retorna true se a senha for correta e false caso contrário
 func (rep *RepUser) UserAuth(username, senha string) bool {
-	auth := validatePass(rep.db, username, senha)
+	auth, err := validatePass(rep.db, username, senha)
+	if err != nil {
+		return false
+	}
 	return auth
 }
 
 func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Mensagem, error) {
-	msgs := []*models.Mensagem{}
+	var msgs []*models.Mensagem
 	var msg *models.Mensagem
 	for rows.Next() {
 		err := rows.Scan(&msg.ID, &msg.HoraEnvio, &msg.Conteudo, &msg.ChatID, &msg.Autor)
@@ -173,6 +175,9 @@ func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Mensagem, error)
 			return nil, err
 		}
 		msgs = append(msgs, msg)
+	}
+	if msgs == nil {
+		return nil, errors.New("Usuário não possui mensagens enviadas")
 	}
 	return msgs, nil
 }
@@ -189,8 +194,12 @@ func getUsersFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Usuario, error) {
 		}
 		user, err := rep.GetUser(userID)
 		if err != nil {
-			users = append(users, user)
+			return nil, err
 		}
+		users = append(users, user)
+	}
+	if users == nil {
+		return nil, errors.New("Não possui usuários")
 	}
 	return users, nil
 }
@@ -211,7 +220,7 @@ func getHashPassword(db *sql.DB, username string) (string, error) {
 	return hash, err
 }
 
-func validatePass(db *sql.DB, username, senha string) bool {
+func validatePass(db *sql.DB, username, senha string) (bool, error) {
 	var (
 		pass     []byte
 		hashpass string
@@ -221,13 +230,13 @@ func validatePass(db *sql.DB, username, senha string) bool {
 	pass = []byte(senha)
 	hashpass, err = getHashPassword(db, username)
 	if err != nil {
-		log.Panic("Usuário não existente")
+		return false, errors.New("Usuário não existente")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashpass), pass)
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	return true
+	return true, nil
 }
