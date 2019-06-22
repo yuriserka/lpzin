@@ -31,7 +31,7 @@ func InserirMensagem(c *gin.Context) {
 func RecuperarMensagens(c *gin.Context) {
 	chatID, err := strconv.Atoi(c.Param("chatID"))
 	if err == nil {
-		msgs, err := repositorios.GetChatMensagens(chatID)
+		msgs, err := repositorios.GetMensagensChat(chatID)
 		if err == nil {
 			c.JSON(http.StatusOK, msgs)
 		} else {

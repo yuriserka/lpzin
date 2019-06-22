@@ -6,4 +6,5 @@ type Chat struct {
 	Users            []*Usuario  `json:"Usuarios"`
 	Mensagens        []*Mensagem `json:"Mensagens"`
 	UsuarioCriadorID int         `json:"UsuarioCriadorID"`
+	FotoPerfil       string      `json:"FotoPerfil"`
 }

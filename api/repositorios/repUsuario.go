@@ -64,7 +64,7 @@ func GetSenhaUsuario(userID int) (string, error) {
 	return senha, nil
 }
 
-func GetUserChats(userid int) ([]*models.Chat, error) {
+func GetChatsUsuario(userid int) ([]*models.Chat, error) {
 	sqlStatement := `
 		select idchat from chat_tem_usuario where idusuario = $1
 	`
@@ -79,19 +79,37 @@ func GetUserChats(userid int) ([]*models.Chat, error) {
 	return chatsIDs, err
 }
 
-func getChatsFromRows(rows *sql.Rows) ([]*models.Chat, error) {
-	var chats []*models.Chat
-	var chatid int
-	for rows.Next() {
-		err := rows.Scan(&chatid)
-		if err != nil {
-			return nil, err
-		}
-		chat, err := GetChat(chatid)
-		if err != nil {
-			return nil, err
-		}
-		chats = append(chats, chat)
+func GetTodosUsuarios() ([]*models.Usuario, error) {
+	sqlString := `
+		select id from usuario 
+	`
+	rows, err := db.Query(sqlString)
+	if err != nil {
+		return nil, err
 	}
-	return chats, nil
+	defer rows.Close()
+
+	usuarios, err := getUsersFromRows(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return usuarios, nil
+}
+
+func getUsersFromRows(rows *sql.Rows) ([]*models.Usuario, error) {
+	var users []*models.Usuario
+	for rows.Next() {
+		var userid int
+		err := rows.Scan(&userid)
+		if err != nil {
+			return nil, err
+		}
+		user, err := GetUsuario(userid)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
 }

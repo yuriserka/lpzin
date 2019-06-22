@@ -41,7 +41,7 @@ func InserirUsuario(c *gin.Context) {
 func RecuperarChatsParticipantes(c *gin.Context) {
 	userID, err := strconv.Atoi(c.Param("userID"))
 	if err == nil {
-		chats, err := repositorios.GetUserChats(userID)
+		chats, err := repositorios.GetChatsUsuario(userID)
 		if err == nil {
 			c.JSON(http.StatusOK, chats)
 		} else {
@@ -49,5 +49,14 @@ func RecuperarChatsParticipantes(c *gin.Context) {
 		}
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func RecuperarTodosUsuarios(c *gin.Context) {
+	us, err :=repositorios.GetTodosUsuarios()
+	if err == nil {
+		c.JSON(http.StatusOK, us)
+	} else {
+		c.JSON(http.StatusNotFound, err.Error())
 	}
 }

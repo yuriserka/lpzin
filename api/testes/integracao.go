@@ -81,13 +81,13 @@ func usarChatTest(id int) {
 
 	chat, err := repositorios.GetChat(chatIDStub)
 	if err != nil {
-		fmt.Println(err.Error() + "get Chat")
+		fmt.Println(err.Error())
 		return
 	}
 	for {
-		msgs, err := repositorios.GetChatMensagens(chatIDStub)
+		msgs, err := repositorios.GetMensagensChat(chatIDStub)
 		if err != nil {
-			fmt.Println(err.Error() + "in for")
+			fmt.Println(err.Error())
 			return
 		}
 		fmt.Printf("\tta no chat %4s amigo\n", chat.Nome)

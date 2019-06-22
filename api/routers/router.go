@@ -40,12 +40,14 @@ func Run() {
 }
 
 func userRoutes( /*userController *controllers.UserController*/ ) {
+	router.GET("/usuarios", controladoras.RecuperarTodosUsuarios)
 	router.GET("/usuarios/:userID", controladoras.RecuperarUsuario)
 	router.POST("/usuarios", controladoras.InserirUsuario)
 	router.GET("/usuarios/:userID/chats", controladoras.RecuperarChatsParticipantes)
 }
 
 func chatRoutes( /*chatController *controllers.ChatController*/ ) {
+	router.GET("/chats", controladoras.RecuperarTodosChats)
 	router.GET("/chats/:chatID", controladoras.RecuperarChat)
 	router.POST("/chats", controladoras.InserirChat)
 	router.POST("/chats/:chatID/mensagens", controladoras.InserirMensagem)

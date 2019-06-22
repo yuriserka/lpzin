@@ -32,20 +32,39 @@ func GetChat(chatID int) (*models.Chat, error) {
 	if err != nil {
 		return nil, err
 	}
-	usuarios, err := GetChatUsuarios(chatID)
+	usuarios, err := GetUsuariosChat(chatID)
 	if err != nil {
 		return nil, err
 	}
-	mensagens, err := GetChatMensagens(chatID)
+	mensagens, err := GetMensagensChat(chatID)
 	if err != nil {
 		return nil, err
 	}
 	return &models.Chat{
-		ID:        chatID,
-		Nome:      nome,
-		Mensagens: mensagens,
-		Users:     usuarios,
+		ID:         chatID,
+		Nome:       nome,
+		Mensagens:  mensagens,
+		Users:      usuarios,
+		FotoPerfil: "",
 	}, nil
+}
+
+func GetTodosChats() ([]*models.Chat, error) {
+	sqlString := `
+		select id from chat
+	`
+	rows, err := db.Query(sqlString)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	chats, err := getChatsFromRows(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return chats, nil
 }
 
 func AddChatMembro(chatID, userID int) error {
@@ -60,7 +79,7 @@ func AddChatMembro(chatID, userID int) error {
 	return nil
 }
 
-func GetChatUsuarios(chatID int) ([]*models.Usuario, error) {
+func GetUsuariosChat(chatID int) ([]*models.Usuario, error) {
 	sqlString := `
 		select u.id from chat_tem_usuario as chu join usuario as u on
 			chu.idusuario = u.id where chu.idchat = $1
@@ -79,7 +98,7 @@ func GetChatUsuarios(chatID int) ([]*models.Usuario, error) {
 	return usuarios, nil
 }
 
-func GetChatMensagens(chatID int) ([]*models.Mensagem, error) {
+func GetMensagensChat(chatID int) ([]*models.Mensagem, error) {
 	sqlString := `
 		select idmsg from mensagem where idchat = $1
 	`
@@ -96,19 +115,19 @@ func GetChatMensagens(chatID int) ([]*models.Mensagem, error) {
 	return mensagens, nil
 }
 
-func getUsersFromRows(rows *sql.Rows) ([]*models.Usuario, error) {
-	var users []*models.Usuario
+func getChatsFromRows(rows *sql.Rows) ([]*models.Chat, error) {
+	var chats []*models.Chat
+	var chatid int
 	for rows.Next() {
-		var userid int
-		err := rows.Scan(&userid)
+		err := rows.Scan(&chatid)
 		if err != nil {
 			return nil, err
 		}
-		user, err := GetUsuario(userid)
+		chat, err := GetChat(chatid)
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, user)
+		chats = append(chats, chat)
 	}
-	return users, nil
+	return chats, nil
 }

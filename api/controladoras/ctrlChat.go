@@ -40,3 +40,12 @@ func InserirChat(c *gin.Context) {
 		}
 	}
 }
+
+func RecuperarTodosChats(c *gin.Context) {
+	chs, err := repositorios.GetTodosChats()
+	if err == nil {
+		c.JSON(http.StatusOK, chs)
+	} else {
+		c.JSON(http.StatusNotFound, err.Error())
+	}
+}
