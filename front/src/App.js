@@ -157,7 +157,8 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getUsuarioAtual()
+    // await this.getUsuarioAtual()
+    await this.StubGetUsuarioAtual()
     await this.StubGetUsuariosAtivos()
 
     this.setState({ loaded: true })
@@ -176,10 +177,10 @@ class App extends React.Component {
             usuarioAtual && this.state.chats && this.state.usuariosAtivos &&
             <div className="App" style={this.getAppStyle()}>
               <Header chatAtual={chatAtual} usuarioAtual={usuarioAtual} ehGrupo={ehGrupo} />
-              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.getChat}
+              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.StubGetChat}
                 addChat={this.StubAddChat} usuariosAtivos={this.state.usuariosAtivos} />
               <ListaMensagens chatAtual={chatAtual} myID={usuarioAtual.ID} ehGrupo={ehGrupo} />
-              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.addMensagem}
+              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.StubAddMensagem}
                 ehGrupo={ehGrupo} />
             </div>
           }

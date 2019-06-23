@@ -15,15 +15,6 @@ import (
 	"github.com/yuriserka/lpzin/api/utils"
 )
 
-const (
-	entrar     = iota + 1
-	cadastrar  = iota + 1
-	criarChat  = iota + 1
-	getmsgs    = iota + 1
-	getchatsid = iota + 1
-	sair       = iota + 1
-)
-
 var (
 	db, err = common.ConnDB()
 	repChat = &repositories.RepChat{}
@@ -49,9 +40,11 @@ func Init() {
 }
 
 func home() {
+
 	const (
 		kusar                 = iota + 1
 		kentrar               = iota + 1
+		klogar                = iota + 1
 		kcadastrar            = iota + 1
 		kcriarChat            = iota + 1
 		kgetMsgs              = iota + 1
@@ -61,6 +54,7 @@ func home() {
 	menu := map[int]string{
 		kusar:                 "Usar o Chat",
 		kentrar:               "Entrar em um Chat",
+		klogar:                "Logue como um usuario",
 		kcadastrar:            "Cadastrar-se",
 		kcriarChat:            "Criar Chat",
 		kgetMsgs:              "Ver Mensagens",
@@ -69,7 +63,9 @@ func home() {
 	}
 	var opt int
 	id := -1
+	// logado := false
 	sortedIndexes := utils.OrdenaMap(menu)
+
 	for opt != ksair {
 		fmt.Println("\tTeste de Integração")
 
@@ -182,14 +178,13 @@ func getUserMsgsTest(id int) {
 		return
 	}
 	msgs, err := repUser.GetUserMsgs(id)
-	if msgs == nil {
-		fmt.Println("kkkkk")
-	}
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	//fmt.Println(msgs)
+	for _, v := range msgs {
+		fmt.Printf("%d => %v %v\n", v.Autor, v.Conteudo, v.HoraEnvio)
+	}
 }
 
 func getUserChatsIDTest(id int) {

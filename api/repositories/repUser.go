@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"database/sql"
-	"fmt"
 	"errors"
 
 	"github.com/yuriserka/lpzin/api/models"
@@ -131,9 +130,15 @@ func (rep *RepUser) GetUserMsgs(userid int) ([]*models.Mensagem, error) {
 	default:
 		return nil, err
 	}
-	defer rows.Close()
-
 	msgs, err := getUserMsgsFromRows(rows, rep.db)
+	if err != nil {
+		return nil, err
+	}
+
+	e1 := rows.Close()
+	if e1 != nil {
+		return nil, e1
+	}
 
 	return msgs, nil
 }
@@ -168,11 +173,21 @@ func (rep *RepUser) UserAuth(username, senha string) bool {
 
 func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Mensagem, error) {
 	var msgs []*models.Mensagem
-	var msg *models.Mensagem
+	var (
+		id, chatID, autorID int
+		hrEnv, conteudo     string
+	)
 	for rows.Next() {
-		err := rows.Scan(&msg.ID, &msg.HoraEnvio, &msg.Conteudo, &msg.ChatID, &msg.Autor)
+		err := rows.Scan(&id, &hrEnv, &conteudo, &chatID, &autorID)
 		if err != nil {
 			return nil, err
+		}
+		msg := &models.Mensagem{
+			ID:        id,
+			HoraEnvio: hrEnv,
+			Conteudo:  conteudo,
+			ChatID:    chatID,
+			Autor:     autorID,
 		}
 		msgs = append(msgs, msg)
 	}
