@@ -15,52 +15,53 @@ const NovoChatDiv = styled.div`
 `;
 
 export class NovoChat extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      open: false
+  PopUpStyle = () => {
+    return {
+      margin: 'auto',
+      position: 'relative',
+      width: '50%',
+      background: 'lightgreen',
+      overflowY: 'scroll',
+      float: 'left',
+      zIndex: '9999'
     }
   }
 
-  openModal = () => {
-    this.setState({ open: true })
-  }
-  closeModal = () => {
-    this.setState({ open: false })
+  PopUpTrigger = () => {
+    return (
+      <NovoChatDiv onClick={this.openModal}>
+        <ImagemPerfil obj={{
+          FotoPerfil: process.env.PUBLIC_URL + '/images/addBtn.png'
+        }} />
+        <div style={{ margin: '20px 0 0 10px', maxWidth: '75%', minWidth: '50%' }}>
+          <span>
+            <strong>Adicionar Novo Chat</strong>
+          </span>
+        </div>
+      </NovoChatDiv>
+    )
   }
 
   render() {
     return (
-      <div>
-        <Popup trigger={
-          <NovoChatDiv onClick={this.openModal}>
-            <ImagemPerfil obj={{
-              FotoPerfil: process.env.PUBLIC_URL + '/images/addBtn.png'
-            }} />
-            <div style={{ margin: '20px 0 0 10px', maxWidth: '75%', minWidth: '50%' }}>
-              <span>
-                <strong>Adicionar Novo Chat</strong>
-              </span>
-            </div>
-          </NovoChatDiv>
-        } modal closeOnDocumentClick contentStyle={{
-          margin: 'auto',
-          position: 'relative',
-          width: '50%',
-          background: 'lightgreen', //garoto eh hackeado em brasilia e a cidade fica chocada com os arquivos encontrados
-          overflowY: 'scroll',
-          float: 'left',
-        }}>
-          <InnerAddChatPopUp usuariosAtivos={this.props.usuariosAtivos} chats={this.props.chats}
-            myID={this.props.myID} addChat={this.props.addChat} />
-        </Popup>
-      </div>
+      <Popup trigger={this.PopUpTrigger()} modal contentStyle={this.PopUpStyle()}
+        closeOnDocumentClick closeOnEscape>
+        {
+          close => (
+            <>
+              <InnerAddChatPopUp usuariosAtivos={this.props.usuariosAtivos} chats={this.props.chats}
+                myID={this.props.myID} addChat={this.props.addChat} onEnter={close} />
+            </>
+          )
+        }
+
+      </Popup>
     )
   }
 }
 
 NovoChat.propTypes = {
-  chats: PropTypes.array.isRequired,
+  chats: PropTypes.array,
   usuariosAtivos: PropTypes.array.isRequired,
   myID: PropTypes.number.isRequired,
   addChat: PropTypes.func.isRequired,

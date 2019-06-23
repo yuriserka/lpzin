@@ -4,6 +4,9 @@ import Chat from './Chat';
 
 export class ListaChats extends React.Component {
   render() {
+    if (this.props.chats === null) {
+      return <></>
+    }
     return this.props.chats.map(
       (chat) => (
         <Chat key={chat.ID} chat={chat} myID={this.props.myID} getChat={this.props.getChat} />
@@ -13,7 +16,7 @@ export class ListaChats extends React.Component {
 }
 
 ListaChats.propTypes = {
-  chats: PropTypes.array.isRequired,
+  chats: PropTypes.array,
   myID: PropTypes.number.isRequired,
   getChat: PropTypes.func.isRequired,
 }

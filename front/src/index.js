@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import App from './App';
-import FakeApp from './stubs/FakeApp'
+import App from './App';
 
-ReactDOM.render(<FakeApp />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

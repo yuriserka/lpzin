@@ -52,7 +52,7 @@ func (rep *RepUser) SetUser(nome, foto, username, senha string) (int, error) {
 }
 
 // GetUser retorna um usuário de acordo com a ID passada, sem sua senha
-func (rep *RepUser) GetUser(userid int) (*models.Usuario, error) {
+func (rep *RepUser) GetUser(userID int) (*models.Usuario, error) {
 	var (
 		id        int
 		nome      string
@@ -61,7 +61,7 @@ func (rep *RepUser) GetUser(userid int) (*models.Usuario, error) {
 		ultimaVez string
 	)
 	sqlStatement := `SELECT id, nome, foto, username, ultima_vez FROM Usuario WHERE id = $1`
-	value := rep.db.QueryRow(sqlStatement, userid)
+	value := rep.db.QueryRow(sqlStatement, userID)
 
 	switch err := value.Scan(&id, &nome, &foto, &username, &ultimaVez); err {
 	case sql.ErrNoRows:
@@ -95,7 +95,7 @@ func (rep *RepUser) GetAllUsers() ([]*models.Usuario, error) {
 	return usuarios, nil
 }
 
-// GetUserID recebe o username do usuário e retorna o id
+// GetuserID recebe o username do usuário e retorna o id
 func (rep *RepUser) GetUserID(username string) (int, error) {
 	id := -1
 	sqlStatement := `
@@ -116,12 +116,12 @@ func (rep *RepUser) GetUserID(username string) (int, error) {
 }
 
 // GetUserMsgs retorna todas as mensagens de um usuário
-func (rep *RepUser) GetUserMsgs(userid int) ([]*models.Mensagem, error) {
+func (rep *RepUser) GetUserMsgs(userID int) ([]*models.Mensagem, error) {
 	sqlStatement := `
 	SELECT IDMsg, Hr_env, Msg, IDChat, IDUsuario
 	FROM Mensagem WHERE IDUsuario = $1
 	`
-	rows, err := rep.db.Query(sqlStatement, userid)
+	rows, err := rep.db.Query(sqlStatement, userID)
 	switch err {
 	case sql.ErrNoRows:
 		return nil, errors.New("Mensagens não encontradas")
@@ -143,15 +143,40 @@ func (rep *RepUser) GetUserMsgs(userid int) ([]*models.Mensagem, error) {
 	return msgs, nil
 }
 
-func (rep *RepUser) GetUserChats(userid int) ([]*models.Chat, error) {
+func (rep *RepUser) GetUserChatsID(userID int) ([]int, error) {
 	sqlStatement := `
 	SELECT idchat FROM chat_tem_usuario WHERE IDUsuario = $1
 	`
-	rows, err := rep.db.Query(sqlStatement, userid)
+	rows, err := rep.db.Query(sqlStatement, userID)
+	switch err {
+	case sql.ErrNoRows:
+		return nil, errors.New("O usuário não participa de nenhum chat")
+	case nil:
+		break
+	default:
+		return nil, err
+	}
+	defer rows.Close()
+
+	chats, err := getChatsIDs(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return chats, nil
+}
+
+// GetUserChats retorna todos os chats participante dos usuários
+func (rep *RepUser) GetUserChats(userID int) ([]*models.Chat, error) {
+	sqlStatement := `
+	SELECT idchat FROM chat_tem_usuario WHERE IDUsuario = $1
+	`
+	rows, err := rep.db.Query(sqlStatement, userID)
 	switch err {
 	case sql.ErrNoRows:
 		return nil, errors.New("Chats não encontrados")
 	case nil:
+		break
 	default:
 		return nil, err
 	}
@@ -217,6 +242,19 @@ func getUsersFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Usuario, error) {
 		return nil, errors.New("Não possui usuários")
 	}
 	return users, nil
+}
+
+func getChatsIDs(rows *sql.Rows) ([]int, error) {
+	var chatIDs []int
+	for rows.Next() {
+		var chatID int
+		err := rows.Scan(&chatID)
+		if err != nil {
+			return nil, err
+		}
+		chatIDs = append(chatIDs, chatID)
+	}
+	return chatIDs, nil
 }
 
 func encryptPass(senha []byte) ([]byte, error) {

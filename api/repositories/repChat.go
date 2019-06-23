@@ -18,7 +18,7 @@ func (rep *RepChat) Init(db *sql.DB) {
 }
 
 // SetChat recebe o nome do chat e o usuário criador do chat e retorna o id do chat
-func (rep *RepChat) SetChat(nome string, userID int) (int, error) {
+func (rep *RepChat) SetChat(nome string) (int, error) {
 	var (
 		id  int
 		err error
@@ -37,10 +37,8 @@ func (rep *RepChat) SetChat(nome string, userID int) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	// Adicionando o usuario ao chat
-	err = rep.SetUserInChat(id, userID)
 
-	return id, err
+	return id, nil
 }
 
 // SetUserInChat seta o usuário pasado como participante do chat passado

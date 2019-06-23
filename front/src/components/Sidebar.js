@@ -6,10 +6,10 @@ import styled from 'styled-components'
 
 const SideBarDiv = styled.div`
   width: 30%;
-  minWidth: 175px;
+  min-width: 175px;
   height: 100%;
   background: white;
-  zIndex: 0;
+  z-index: 0;
   float: left;
   position: relative;
 
@@ -29,7 +29,7 @@ export class Sidebar extends Component {
     return (
       <SideBarDiv>
         <ListaChats chats={this.props.chats} myID={this.props.myID} getChat={this.props.getChat} />
-        <NovoChat chats={this.props.chats} addChat={this.props.addChat} myID={this.props.myID} 
+        <NovoChat chats={this.props.chats} addChat={this.props.addChat} myID={this.props.myID}
           usuariosAtivos={this.props.usuariosAtivos} />
       </SideBarDiv>
     )
@@ -39,7 +39,7 @@ export class Sidebar extends Component {
 Sidebar.propTypes = {
   usuariosAtivos: PropTypes.array.isRequired,
   myID: PropTypes.number.isRequired,
-  chats: PropTypes.array.isRequired,
+  chats: PropTypes.array,
   getChat: PropTypes.func.isRequired,
   addChat: PropTypes.func.isRequired,
 }

@@ -74,3 +74,26 @@ func (userctrl *UserController) RecuperarTodosUsuarios(c *gin.Context) {
 		c.JSON(http.StatusNotFound, err.Error())
 	}
 }
+
+// func (userctrl *UserController) Login(c *gin.Context) {
+// 	var (
+// 		err      error
+// 		username string
+// 		senha    string
+// 	)
+// 	username = c.Param("username")
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, err.Error())
+// 	}
+// 	senha = c.Param("senha")
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, err.Error())
+// 	}
+
+// 	logado, err := userctrl.userRepository.UserAuth(username, senha)
+// 	if err != nil {
+// 		c.JSON(http.StatusNotFound, err.Error())
+// 	}
+
+// 	c.JSON(http.StatusOK, logado)
+// }

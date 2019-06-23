@@ -18,8 +18,8 @@ export class InnerAddChatPopUp extends Component {
     super(props)
     this.state = {
       nome: '',
-      usuariosSelecionados: [],
     }
+    this.usuariosSelecionados = []
   }
 
   changeHandler = (e) => {
@@ -28,14 +28,15 @@ export class InnerAddChatPopUp extends Component {
 
   addChatHandler = (e) => {
     if (e.keyCode === 13 && e.target.value.length > 0) {
-      console.log('this.state.usuariosSelecionados', this.state.usuariosSelecionados)
-        this.props.addChat({
-          ID: this.props.chats.length,
-          Nome: e.target.value,
-          CriadorID: this.props.myID,
-          FotoPerfil: '',
-        }, this.state.usuariosSelecionados)
-      this.setState({ nome: '', usuariosSelecionados: []})
+      this.props.addChat({
+        ID: this.props.chats + 1,
+        Nome: e.target.value,
+        CriadorID: this.props.myID,
+        FotoPerfil: '',
+      }, this.usuariosSelecionados)
+      this.setState({ nome: '' })
+      this.usuariosSelecionados = []
+      this.props.onEnter()
     }
   }
 
@@ -50,14 +51,12 @@ export class InnerAddChatPopUp extends Component {
   }
 
   selecionar = (usuario) => {
-    const usa = this.state.usuariosSelecionados
-    if (usuario.Selecionado) {
-      usa.push(usuario)
-      this.setState({
-        usuariosSelecionados: usa
-      })
-    }
+    const uss = this.usuariosSelecionados
+    uss.push(usuario)
+    const realmenteSelecionados = uss.filter(u => u.Selecionado === true)
+    this.usuariosSelecionados = realmenteSelecionados
   }
+
 
   render() {
     return (
@@ -67,8 +66,8 @@ export class InnerAddChatPopUp extends Component {
             <Input placeholder="Digite o nome do Chat" onChange={this.changeHandler} value={this.state.nome}
               onKeyDown={this.addChatHandler} />
           </div>
-          <ListaUsuarios usuariosAtivos={this.props.usuariosAtivos} myID={this.props.myID} 
-            selecionar={this.selecionar}/>
+          <ListaUsuarios usuariosAtivos={this.props.usuariosAtivos} myID={this.props.myID}
+            selecionar={this.selecionar} />
         </div>
       </div>
     )
@@ -76,10 +75,11 @@ export class InnerAddChatPopUp extends Component {
 }
 
 InnerAddChatPopUp.propTypes = {
-  chats: PropTypes.array.isRequired,
+  chats: PropTypes.array,
   usuariosAtivos: PropTypes.array.isRequired,
   myID: PropTypes.number.isRequired,
   addChat: PropTypes.func.isRequired,
+  onEnter: PropTypes.func.isRequired,
 }
 
 export default InnerAddChatPopUp

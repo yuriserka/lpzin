@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar';
 import CaixaEnvio from './components/CaixaEnvio';
 import Header from './components/Header';
 import axios from 'axios';
-import { StubChats, StubUsuarios } from './stubs'
 
 class App extends React.Component {
   constructor() {
@@ -16,8 +15,6 @@ class App extends React.Component {
       usuarioAtual: null,
       loaded: false,
       usuariosAtivos: null,
-      stubchats: StubChats,
-      stubusuarios: StubUsuarios,
     };
   }
 
@@ -40,51 +37,31 @@ class App extends React.Component {
     }
   }
 
-  StubGetChat = (id) => {
-    this.setState({
-      chatAtual: this.state.chats[id]
-    })
-  }
+  addChat = (chat, usuarios) => {
+    if (usuarios.length < 1) {
+      alert('É necessário selecionar pelo menos um usuário')
+      return
+    }
 
-  StubGetChats = () => {
-    this.setState({
-      chats: this.state.stubchats
-    })
-  }
-
-  StubGetUsuarioAtual = () => {
-    this.setState({
-      usuarioAtual: this.state.stubusuarios[0]
-    }, this.StubGetChats)
-  }
-
-  StubGetUsuariosAtivos = () => {
-    this.setState({
-      usuariosAtivos: this.state.stubusuarios
-    })
-  }
-
-  StubAddMensagem = (msg) => {
-    this.setState({
-      chats: this.state.chats.map(c => {
-        if (c.ID === msg.ChatID) {
-          c.Mensagens.push(msg)
-        }
-        return c
-      })
-    })
-  }
-
-  StubAddChat = (chat) => {
-    chat.Usuarios = []
     chat.Mensagens = []
-    chat.Usuarios.push(StubUsuarios.find(u => u.ID === chat.CriadorID), StubUsuarios[2])
+    chat.Usuarios = usuarios
+    chat.Usuarios.push(this.state.usuarioAtual)
+    const noSelecionado = chat.Usuarios.map(u => { delete u.Selecionado; return u.ID })
+    chat.Usuarios = noSelecionado
+
     delete chat.CriadorID
 
-    this.state.chats.push(chat)
-    this.setState({
-      chats: this.state.chats,
-    })
+    const t = this.state.chats === null ? [] : this.state.chats
+    t.push(chat)
+
+    axios.post('/chats', chat).then(
+      (res) => {
+        this.setState({
+          chats: t
+        }, this.getChats)
+      }
+    )
+
   }
 
   getChat = (IDchatClicado) => {
@@ -93,7 +70,7 @@ class App extends React.Component {
       (res) => {
         this.setState({
           chatAtual: res.data
-        }, () => { console.log('GetChat: this.chatAtual terminou', this.state.chatAtual) })
+        }, () => { console.log('chat atual', this.state.chatAtual) })
       },
       (error) => {
         this.setState({
@@ -113,10 +90,10 @@ class App extends React.Component {
         (res) => {
           const { chats } = this.state
           const chatAlvo = chats.find(c => c.ID === msg.ChatID)
-          console.log('chatAlvo', chatAlvo)
           chatAlvo.Mensagens.push(msg)
-          console.log('vendo chats dnv', chats)
-          this.setState({ chatAtual: chatAlvo })
+          this.setState({
+            chatAtual: chatAlvo
+          }, () => console.log('mensagens chat atual', this.state.chatAtual.Mensagens))
         },
         (error) => {
           this.setState({ error: error })
@@ -130,8 +107,7 @@ class App extends React.Component {
       (res) => {
         this.setState({
           chats: res.data,
-        },
-          () => { console.log('this.state.chats terminou', this.state.chats) })
+        }, () => { console.log('chats', this.state.chats) })
       }, (error) => {
         this.setState({
           error: error,
@@ -149,38 +125,49 @@ class App extends React.Component {
           }, this.getChats)
         },
         (error) => {
+          this.setState({ error: error })
+        }
+      )
+  }
+
+  getUsuariosAtivos = () => {
+    axios.get('/usuarios')
+      .then(
+        (res) => {
           this.setState({
-            error: error,
-          })
+            usuariosAtivos: res.data
+          }, () => console.log('usuarios ativos', this.state.usuariosAtivos))
+        },
+        (error) => {
+          this.setState({ error: error })
         }
       )
   }
 
   async componentDidMount() {
-    // await this.getUsuarioAtual()
-    await this.StubGetUsuarioAtual()
-    await this.StubGetUsuariosAtivos()
+    await this.getUsuarioAtual()
+    await this.getUsuariosAtivos()
 
     this.setState({ loaded: true })
   }
 
   render() {
-    const chatAtual = this.state.chatAtual
-    const usuarioAtual = this.state.usuarioAtual
+    const { chatAtual, usuarioAtual } = this.state
     const ehGrupo = chatAtual === null ? false : (chatAtual.Usuarios.length > 2 ? true : false)
     if (!this.state.loaded) {
-      return <div>Carregando esta poha</div>
-    } else {
+      return <div>Carregando</div>
+    }
+     else {
       return (
         <div >
           {
-            usuarioAtual && this.state.chats && this.state.usuariosAtivos &&
+            usuarioAtual && this.state.usuariosAtivos &&
             <div className="App" style={this.getAppStyle()}>
               <Header chatAtual={chatAtual} usuarioAtual={usuarioAtual} ehGrupo={ehGrupo} />
-              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.StubGetChat}
-                addChat={this.StubAddChat} usuariosAtivos={this.state.usuariosAtivos} />
+              <Sidebar chats={this.state.chats} myID={usuarioAtual.ID} getChat={this.getChat}
+                addChat={this.addChat} usuariosAtivos={this.state.usuariosAtivos} />
               <ListaMensagens chatAtual={chatAtual} myID={usuarioAtual.ID} ehGrupo={ehGrupo} />
-              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.StubAddMensagem}
+              <CaixaEnvio chatAtual={chatAtual} usuarioAtual={usuarioAtual} addMensagem={this.addMensagem}
                 ehGrupo={ehGrupo} />
             </div>
           }

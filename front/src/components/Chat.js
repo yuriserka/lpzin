@@ -12,13 +12,6 @@ const ChatBoxDiv = styled.div`
   height: 72px;
 `;
 
-const FimChatBox = styled.div`
-  border: 0;
-  height: 1px;
-  background-image: linear-gradient(to right, transparent, silver, transparent);
-  position: absolute;
-`;
-
 export class Chat extends React.Component {
   getChatInfoStyles = () => {
     return {
@@ -85,7 +78,6 @@ export class Chat extends React.Component {
             </span>
           </div>
         </div>
-        <FimChatBox />
       </ChatBoxDiv>
     )
   }

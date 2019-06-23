@@ -42,13 +42,13 @@ class FakeApp extends React.Component {
   StubGetChat = (id) => {
     this.setState({
       chatAtual: this.state.chats[id]
-    })
+    }, () => console.log('chatAtual', this.state.chatAtual))
   }
 
   StubGetChats = () => {
     this.setState({
       chats: this.state.stubchats
-    })
+    }, () => console.log('chats', this.state.chats))
   }
 
   StubGetUsuarioAtual = () => {
@@ -60,7 +60,7 @@ class FakeApp extends React.Component {
   StubGetUsuariosAtivos = () => {
     this.setState({
       usuariosAtivos: this.state.stubusuarios
-    })
+    }, () => console.log('usuariosAtivos', this.state.usuariosAtivos))
   }
 
   StubAddMensagem = (msg) => {
@@ -71,41 +71,39 @@ class FakeApp extends React.Component {
         }
         return c
       })
-    })
+    }, () => console.log('chatAtivo.Mensagens', this.state.chatAtual.Mensagens))
   }
 
   StubAddChat = (chat, usuarios) => {
-    chat.Usuarios = usuarios
-    chat.Mensagens = []
-
-    console.log('usuarios', usuarios)
-    
-    if (usuarios.length >= 2) {
-      chat.Usuarios.push(this.state.usuarioAtual)
-      chat.Usuarios.map(u => delete u.Selecionado )
-    } else {
+    if (usuarios.length < 1) {
+      alert('É necessário selecionar pelo menos um usuário selecionado')
       return
     }
-    delete chat.CriadorID
 
-    console.log('chat.Usuarios', chat.Usuarios)
+    chat.ID = this.state.chats.length
+    chat.Mensagens = []
+    chat.Usuarios = usuarios
+    chat.Usuarios.push(this.state.usuarioAtual)
+    const noSelecionado = chat.Usuarios.map(u => { delete u.Selecionado; return u })
+    chat.Usuarios = noSelecionado
+
+    delete chat.CriadorID
 
     this.state.chats.push(chat)
     this.setState({
       chats: this.state.chats,
-    })
+    }, () => console.log('NovoChat.Usuarios', chat.Usuarios))
   }
 
   async componentDidMount() {
     await this.StubGetUsuarioAtual()
     await this.StubGetUsuariosAtivos()
 
-    this.setState({ loaded: true })
+    this.setState({ loaded: true }, () => console.log('terminou de carregar'))
   }
 
   render() {
-    const chatAtual = this.state.chatAtual
-    const usuarioAtual = this.state.usuarioAtual
+    const {chatAtual, usuarioAtual} = this.state
     const ehGrupo = chatAtual === null ? false : (chatAtual.Usuarios.length > 2 ? true : false)
     if (!this.state.loaded) {
       return <div>Carregando esta poha</div>

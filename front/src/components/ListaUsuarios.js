@@ -4,7 +4,7 @@ import ImagemPerfil from './ImagemPerfil';
 
 export class ListaUsuarios extends Component {
   selecionarUsuario(u) {
-    u.Selecionado = u.Selecionado ? false : true
+    u.Selecionado = !u.Selecionado
     this.props.selecionar(u)
   }
 
@@ -19,9 +19,9 @@ export class ListaUsuarios extends Component {
 
   render() {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
         {
-          this.props.usuariosAtivos.map(ua => (
+          this.props.usuariosAtivos.map(u => { u.Selecionado = false; return u }).map(ua => (
             ua.ID !== this.props.myID &&
             <div key={ua.ID} style={this.getUsuarioDivStyle()}>
               <div style={{ display: 'flex' }}>
@@ -30,7 +30,7 @@ export class ListaUsuarios extends Component {
                   {ua.Nome}
                 </span>
                 <div>
-                  <input type="checkbox" onChange={this.selecionarUsuario.bind(this, ua)}/>
+                  <input type="checkbox" onChange={this.selecionarUsuario.bind(this, ua)} />
                 </div>
               </div>
             </div>

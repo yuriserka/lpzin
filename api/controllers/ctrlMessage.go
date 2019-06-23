@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yuriserka/lpzin/api/repositories"

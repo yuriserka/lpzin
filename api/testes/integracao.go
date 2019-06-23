@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/yuriserka/lpzin/api/common"
@@ -29,7 +28,7 @@ func Init() {
 		log.Panic(fmt.Sprintf("db: %v", err))
 	}
 
-	// schema.DropSchema(db) // método temporário para realizar testes
+	schema.DropSchema(db) // método temporário para realizar testes
 	schema.CreateSchema(db)
 
 	defer db.Close()
@@ -104,7 +103,7 @@ func logadoHome(id int) {
 		case kusar:
 			usarChatTest(id)
 		case kcriarChat:
-			criarChatTest()
+			criarChatTest(id)
 		case kgetMsgs:
 			getUserMsgsTest(id)
 		case kgetChatsParticipante:
@@ -225,24 +224,30 @@ func getUserChatsIDTest(id int) {
 	return
 }
 
-func criarChatTest() {
+func criarChatTest(id int) {
 	var (
 		reader *bufio.Reader
 		nome   string
-		userid int
+		// userid int
 	)
 	fmt.Print("Digite o nome do chat: ")
 	reader = bufio.NewReader(os.Stdin)
 	nome, _ = reader.ReadString('\n')
 	nome = nome[:len(nome)-2]
 
-	fmt.Println()
-	fmt.Print("Digite o id do criador do chat: ")
-	reader = bufio.NewReader(os.Stdin)
-	id, _ := reader.ReadString('\n')
-	userid, _ = strconv.Atoi(id[:len(id)-2])
+	// fmt.Println()
+	// fmt.Print("Digite o id do criador do chat: ")
+	// reader = bufio.NewReader(os.Stdin)
+	// id, _ := reader.ReadString('\n')
+	// userid, _ = strconv.Atoi(id[:len(id)-2])
 
-	_, err := repChat.SetChat(nome, userid)
+	chid, err := repChat.SetChat(nome)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	err = repChat.SetUserInChat(chid, id)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
