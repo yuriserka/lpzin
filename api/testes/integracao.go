@@ -42,68 +42,73 @@ func Init() {
 func home() {
 
 	const (
-		klogar                = iota + 1
-		kcadastrar            = iota + 1
-		kusar                 = iota + 1
-		kentrar               = iota + 1
-		kcriarChat            = iota + 1
-		kgetMsgs              = iota + 1
-		kgetChatsParticipante = iota + 1
-		kdeslogar             = iota + 1
-		ksair                 = iota + 1
+		klogar     = iota + 1
+		kcadastrar = iota + 1
+		ksair      = iota + 1
 	)
 	menuLogin := map[int]string{
 		klogar:     "Logar",
 		kcadastrar: "Cadastrar-se",
 		ksair:      "Sair",
 	}
+
+	opt := -1
+	sortedIndexesLogin := utils.OrdenaMap(menuLogin)
+	for opt != ksair {
+		utils.ClearScreen()
+		fmt.Println("\tTeste de Integração")
+		for _, k := range sortedIndexesLogin {
+			fmt.Printf("[%d] %s\n", k, menuLogin[k])
+		}
+		fmt.Print("\tOpção: ")
+		switch fmt.Scanf("%d\n", &opt); opt {
+		case klogar:
+			if logado, id := logarNoWebZap(); logado {
+				logadoHome(id)
+			}
+		case kcadastrar:
+			cadastrarTest()
+		}
+	}
+}
+
+func logadoHome(id int) {
+	const (
+		kusar                 = iota + 1
+		kentrar               = iota + 1
+		kcriarChat            = iota + 1
+		kgetMsgs              = iota + 1
+		kgetChatsParticipante = iota + 1
+		kvoltar               = iota + 1
+	)
 	menu := map[int]string{
 		kusar:                 "Usar o Chat",
 		kentrar:               "Entrar em um Chat",
 		kcriarChat:            "Criar Chat",
 		kgetMsgs:              "Ver Mensagens",
 		kgetChatsParticipante: "Ver Chats que participa",
-		kdeslogar:             "Deslogar",
-		ksair:                 "Voltar",
+		kvoltar:               "Voltar",
 	}
-	opt := -1
-	optLogin := -1
-	logado := false
-	id := -1
-	sortedIndexesLogin := utils.OrdenaMap(menuLogin)
 	sortedIndexes := utils.OrdenaMap(menu)
-	for optLogin != ksair {
-		for _, k := range sortedIndexesLogin {
-			fmt.Printf("[%d] %s\n", k, menuLogin[k])
+	opt := -1
+	for opt != kvoltar {
+		utils.ClearScreen()
+		fmt.Println("\tTeste dos Serviços")
+		for _, i := range sortedIndexes {
+			fmt.Printf("[%d] %s\n", i, menu[i])
 		}
-		fmt.Print("\tOpção: ")
-		switch fmt.Scanf("%d\n", &optLogin); optLogin {
-		case klogar:
-			logado, id = logarNoWebZap()
-		case kcadastrar:
-			cadastrarTest()
-		}
-
-		for opt != ksair && logado {
-			fmt.Println("\tTeste de Integração")
-			for _, i := range sortedIndexes {
-				fmt.Printf("[%d] %s\n", i, menu[i])
-			}
-			fmt.Print("\tOpcao: ")
-			switch fmt.Scanf("%d\n", &opt); opt {
-			case kentrar:
-				entrarNoChatTest(id)
-			case kusar:
-				usarChatTest(id)
-			case kcriarChat:
-				criarChatTest()
-			case kgetMsgs:
-				getUserMsgsTest(id)
-			case kgetChatsParticipante:
-				getUserChatsIDTest(id)
-			case kdeslogar:
-				logado = false
-			}
+		fmt.Print("\tOpcao: ")
+		switch fmt.Scanf("%d\n", &opt); opt {
+		case kentrar:
+			entrarNoChatTest(id)
+		case kusar:
+			usarChatTest(id)
+		case kcriarChat:
+			criarChatTest()
+		case kgetMsgs:
+			getUserMsgsTest(id)
+		case kgetChatsParticipante:
+			getUserChatsIDTest(id)
 		}
 	}
 }
@@ -124,8 +129,8 @@ func usarChatTest(id int) {
 			fmt.Println(err.Error())
 			return
 		}
+		utils.ClearScreen()
 		fmt.Printf("\tta no chat %4s amigo\n", chat.Nome)
-
 		for _, v := range msgs {
 			u, _ := repUser.GetUser(v.Autor)
 			fmt.Printf("%s => %-6s %-10s\n", u.Nome, v.Conteudo, v.HoraEnvio)
@@ -265,7 +270,7 @@ func logarNoWebZap() (bool, int) {
 		logado, err := repUser.UserAuth(username, password)
 		if err != nil {
 			if !logado {
-				fmt.Println("Username ou senha errada")
+				fmt.Printf("Username ou senha errada\n")
 				fmt.Print("Quer sair (s/n): ")
 				reader = bufio.NewReader(os.Stdin)
 				opt, _ = reader.ReadString('\n')
