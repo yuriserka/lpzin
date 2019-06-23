@@ -18,6 +18,7 @@ export class InnerAddChatPopUp extends Component {
     super(props)
     this.state = {
       nome: '',
+      usuariosSelecionados: [],
     }
   }
 
@@ -27,13 +28,14 @@ export class InnerAddChatPopUp extends Component {
 
   addChatHandler = (e) => {
     if (e.keyCode === 13 && e.target.value.length > 0) {
-      this.props.addChat({
-        ID: this.props.chats.length,
-        Nome: e.target.value,
-        CriadorID: this.props.myID,
-        FotoPerfil: '',
-      })
-      this.setState({ nome: '' })
+      console.log('this.state.usuariosSelecionados', this.state.usuariosSelecionados)
+        this.props.addChat({
+          ID: this.props.chats.length,
+          Nome: e.target.value,
+          CriadorID: this.props.myID,
+          FotoPerfil: '',
+        }, this.state.usuariosSelecionados)
+      this.setState({ nome: '', usuariosSelecionados: []})
     }
   }
 
@@ -43,8 +45,17 @@ export class InnerAddChatPopUp extends Component {
       margin: '15px 10px',
       background: 'red',
       padding: '15px',
-      display: 'flex',
       justifyContent: 'center',
+    }
+  }
+
+  selecionar = (usuario) => {
+    const usa = this.state.usuariosSelecionados
+    if (usuario.Selecionado) {
+      usa.push(usuario)
+      this.setState({
+        usuariosSelecionados: usa
+      })
     }
   }
 
@@ -56,7 +67,8 @@ export class InnerAddChatPopUp extends Component {
             <Input placeholder="Digite o nome do Chat" onChange={this.changeHandler} value={this.state.nome}
               onKeyDown={this.addChatHandler} />
           </div>
-          <ListaUsuarios usuariosAtivos={this.props.usuariosAtivos} myID={this.props.myID} />
+          <ListaUsuarios usuariosAtivos={this.props.usuariosAtivos} myID={this.props.myID} 
+            selecionar={this.selecionar}/>
         </div>
       </div>
     )
