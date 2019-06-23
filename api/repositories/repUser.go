@@ -163,12 +163,12 @@ func (rep *RepUser) GetUserChats(userid int) ([]*models.Chat, error) {
 }
 
 // UserAuth recebe o username e senha, retorna true se a senha for correta e false caso contrário
-func (rep *RepUser) UserAuth(username, senha string) bool {
+func (rep *RepUser) UserAuth(username, senha string) (bool, error) {
 	auth, err := validatePass(rep.db, username, senha)
 	if err != nil {
-		return false
+		return false, err
 	}
-	return auth
+	return auth, nil
 }
 
 func getUserMsgsFromRows(rows *sql.Rows, db *sql.DB) ([]*models.Mensagem, error) {

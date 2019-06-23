@@ -42,51 +42,68 @@ func Init() {
 func home() {
 
 	const (
-		kusar                 = iota + 1
-		kentrar               = iota + 1
 		klogar                = iota + 1
 		kcadastrar            = iota + 1
+		kusar                 = iota + 1
+		kentrar               = iota + 1
 		kcriarChat            = iota + 1
 		kgetMsgs              = iota + 1
 		kgetChatsParticipante = iota + 1
+		kdeslogar             = iota + 1
 		ksair                 = iota + 1
 	)
+	menuLogin := map[int]string{
+		klogar:     "Logar",
+		kcadastrar: "Cadastrar-se",
+		ksair:      "Sair",
+	}
 	menu := map[int]string{
 		kusar:                 "Usar o Chat",
 		kentrar:               "Entrar em um Chat",
-		klogar:                "Logue como um usuario",
-		kcadastrar:            "Cadastrar-se",
 		kcriarChat:            "Criar Chat",
 		kgetMsgs:              "Ver Mensagens",
 		kgetChatsParticipante: "Ver Chats que participa",
+		kdeslogar:             "Deslogar",
 		ksair:                 "Voltar",
 	}
-	var opt int
+	opt := -1
+	optLogin := -1
+	logado := false
 	id := -1
-	// logado := false
+	sortedIndexesLogin := utils.OrdenaMap(menuLogin)
 	sortedIndexes := utils.OrdenaMap(menu)
-
-	for opt != ksair {
-		fmt.Println("\tTeste de Integração")
-
-		for _, i := range sortedIndexes {
-			fmt.Printf("[%d] %s\n", i, menu[i])
+	for optLogin != ksair {
+		for _, k := range sortedIndexesLogin {
+			fmt.Printf("[%d] %s\n", k, menuLogin[k])
+		}
+		fmt.Print("\tOpção: ")
+		switch fmt.Scanf("%d\n", &optLogin); optLogin {
+		case klogar:
+			logado, id = logarNoWebZap()
+		case kcadastrar:
+			cadastrarTest()
 		}
 
-		fmt.Print("\tOpcao: ")
-		switch fmt.Scanf("%d\n", &opt); opt {
-		case kentrar:
-			entrarNoChatTest(id)
-		case kusar:
-			usarChatTest(id)
-		case kcadastrar:
-			id = cadastrarTest()
-		case kcriarChat:
-			criarChatTest()
-		case kgetMsgs:
-			getUserMsgsTest(id)
-		case kgetChatsParticipante:
-			getUserChatsIDTest(id)
+		for opt != ksair && logado {
+			fmt.Println("\tTeste de Integração")
+			for _, i := range sortedIndexes {
+				fmt.Printf("[%d] %s\n", i, menu[i])
+			}
+			fmt.Print("\tOpcao: ")
+			switch fmt.Scanf("%d\n", &opt); opt {
+			case kentrar:
+				entrarNoChatTest(id)
+			case kusar:
+				usarChatTest(id)
+			case kcriarChat:
+				criarChatTest()
+			case kgetMsgs:
+				getUserMsgsTest(id)
+			case kgetChatsParticipante:
+				getUserChatsIDTest(id)
+			case kdeslogar:
+				logado = false
+			}
 		}
 	}
 }
@@ -192,6 +209,15 @@ func getUserChatsIDTest(id int) {
 		fmt.Println("cadastre-se primeiro")
 		return
 	}
+	chats, err := repUser.GetUserChats(id)
+	if err != nil {
+		fmt.Printf("error: %+v\n", err)
+		return
+	}
+	for _, v := range chats {
+		fmt.Printf("ID: %d => %v\n", v.ID, v.Nome)
+	}
+	return
 }
 
 func criarChatTest() {
@@ -216,4 +242,40 @@ func criarChatTest() {
 		fmt.Println(err.Error())
 		return
 	}
+}
+
+func logarNoWebZap() (bool, int) {
+	var (
+		username string
+		password string
+		id       int
+	)
+	opt := "n"
+	for opt == "n" {
+		fmt.Print("Digite seu username: ")
+		reader := bufio.NewReader(os.Stdin)
+		username, _ = reader.ReadString('\n')
+		username = username[:len(username)-2]
+
+		fmt.Print("Digite sua senha: ")
+		reader = bufio.NewReader(os.Stdin)
+		password, _ = reader.ReadString('\n')
+		password = password[:len(password)-2]
+
+		logado, err := repUser.UserAuth(username, password)
+		if err != nil {
+			if !logado {
+				fmt.Println("Username ou senha errada")
+				fmt.Print("Quer sair (s/n): ")
+				reader = bufio.NewReader(os.Stdin)
+				opt, _ = reader.ReadString('\n')
+				opt = opt[:len(opt)-2]
+			}
+		}
+		if logado {
+			id, _ = repUser.GetUserID(username)
+			return logado, id
+		}
+	}
+	return false, -1
 }
