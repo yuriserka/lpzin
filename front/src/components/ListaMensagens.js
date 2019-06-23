@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import DefaultPage from './DefaultPage';
 import styled from 'styled-components';
 
-const SideBarDiv = styled.div`
+const ConversasDiv = styled.div`
   ::-webkit-scrollbar {
     width: 6px !important;
     height: 6px !important;
@@ -55,9 +55,9 @@ class ListaMensagens extends React.Component {
 
   render() {
     return (
-      <SideBarDiv>
+      <ConversasDiv>
         {this.getMensagens()}
-      </SideBarDiv>
+      </ConversasDiv>
     )
   }
 }

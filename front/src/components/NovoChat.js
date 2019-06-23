@@ -43,7 +43,14 @@ export class NovoChat extends Component {
               </span>
             </div>
           </NovoChatDiv>
-        } modal closeOnDocumentClick>
+        } modal closeOnDocumentClick contentStyle={{
+          margin: 'auto',
+          position: 'relative',
+          width: '50%',
+          background: 'lightgreen', //garoto eh hackeado em brasilia e a cidade fica chocada com os arquivos encontrados
+          overflowY: 'scroll',
+          float: 'left',
+        }}>
           <InnerAddChatPopUp usuariosAtivos={this.props.usuariosAtivos} chats={this.props.chats}
             myID={this.props.myID} addChat={this.props.addChat} />
         </Popup>
