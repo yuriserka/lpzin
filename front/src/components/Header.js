@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import PopUp from 'reactjs-popup'
+import ImagemPerfil from './ImagemPerfil';
 
 const LeftHeader = styled.div`
   height: 100%;
@@ -62,14 +64,50 @@ export class Header extends React.Component {
     return this.props.ehGrupo === true ? this.grupoInfo() : this.outroUsuarioInfo()
   }
 
+  getUsuarioDivStyle = () => {
+    return {
+      background: 'lightgray',
+      borderRadius: '10px',
+      height: '60px',
+      margin: '5px',
+      // width: '50%',
+      // display: 'flex',
+      // justifyContent: 'center'
+    }
+  }
+
   renderizarInfoConversa = () => {
     if (this.props.chatAtual === null) {
       return
     }
     return (
-      <RightHeader>
-        {this.getChatInfo()}
-      </RightHeader>
+      <PopUp modal closeOnEscape closeOnDocumentClick trigger={
+        <RightHeader>
+          {this.getChatInfo()}
+        </RightHeader>
+      } contentStyle={{ margin: '8px 8px 0 75.5%', padding: '0', height: '97.1%', }}>
+        <>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <ImagemPerfil obj={this.props.chatAtual} h={100} w={100} ehGrupo={this.props.ehGrupo}/>
+          </div>
+          <h2 style={{ color: 'black', textAlign: 'center', background: 'whitesmoke' }}>
+            {this.props.chatAtual.Nome}
+          </h2>
+          <h3 style={{ color: 'black', textAlign: 'center' }}>Membros:</h3>
+          {
+            this.props.chatAtual.Usuarios.map(ua => (
+              <div key={ua.ID} style={this.getUsuarioDivStyle()}>
+                <div style={{ display: 'flex' }}>
+                  <ImagemPerfil obj={ua} h={40} w={40} />
+                  <span style={{ padding: '22px 15px 10px', color: 'black' }}>
+                    {ua.ID === this.props.usuarioAtual.ID ? 'Você' : ua.Nome}
+                  </span>
+                </div>
+              </div>
+            ))
+          }
+        </>
+      </PopUp>
     )
   }
 

@@ -29,7 +29,7 @@ export class NovoChat extends Component {
 
   PopUpTrigger = () => {
     return (
-      <NovoChatDiv onClick={this.openModal}>
+      <NovoChatDiv>
         <ImagemPerfil obj={{
           FotoPerfil: process.env.PUBLIC_URL + '/images/addBtn.png'
         }} />

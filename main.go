@@ -1,19 +1,23 @@
 package main
 
 import (
-	"github.com/yuriserka/lpzin/api/testes"
+	"fmt"
+	"log"
+
+	"github.com/yuriserka/lpzin/api/common"
+	"github.com/yuriserka/lpzin/api/routers"
 )
 
 func main() {
-	testes.Init()
+	// testes.Init()
 
-	// db, err := common.ConnDB()
-	// if err != nil {
-	// 	log.Panic(fmt.Sprintf("db: %v", err))
-	// }
+	db, err := common.ConnDB()
+	if err != nil {
+		log.Panic(fmt.Sprintf("db: %v", err))
+	}
 
-	// defer db.Close()
+	defer db.Close()
 
-	// routers.Init(db)
-	// routers.Run()
+	routers.Init(db)
+	routers.Run()
 }
