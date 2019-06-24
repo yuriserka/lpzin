@@ -48,7 +48,7 @@ export class Chat extends React.Component {
       const ft = outroUsuario === undefined ? '' : outroUsuario.FotoPerfil
       this.props.chat.FotoPerfil = ft
     }
-    return <ImagemPerfil obj={this.props.chat} ehGrupo={ehGrupo} />
+    return <ImagemPerfil obj={this.props.chat} ehGrupo={ehGrupo} encoded={true} />
   }
 
   antiTextoLongo = () => {

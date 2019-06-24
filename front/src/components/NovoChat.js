@@ -32,7 +32,7 @@ export class NovoChat extends Component {
       <NovoChatDiv>
         <ImagemPerfil obj={{
           FotoPerfil: process.env.PUBLIC_URL + '/images/addBtn.png'
-        }} />
+        }} encoded={false} />
         <div style={{ margin: '20px 0 0 10px', maxWidth: '75%', minWidth: '50%' }}>
           <span>
             <strong>Adicionar Novo Chat</strong>

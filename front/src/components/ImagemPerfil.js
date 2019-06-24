@@ -28,7 +28,11 @@ export class ImagemPerfil extends React.Component {
       }
       return <img src={process.env.PUBLIC_URL + '/images/defaultUsuario.png'} alt="" style={this.getImageStyle()} />
     }
-    return <img src={this.props.obj.FotoPerfil} alt="" style={this.getImageStyle()} />
+    if (this.props.encoded) {
+      return <img src={`data:image/jpeg;base64,${this.props.obj.FotoPerfil}`} alt="" style={this.getImageStyle()} />
+    } else {
+      return <img src={this.props.obj.FotoPerfil} alt="" style={this.getImageStyle()} />
+    }
   }
 
   render() {
@@ -49,6 +53,7 @@ ImagemPerfil.propTypes = {
   ehGrupo: PropTypes.bool,
   w: PropTypes.number,
   h: PropTypes.number,
+  encoded: PropTypes.bool,
 }
 
 export default ImagemPerfil

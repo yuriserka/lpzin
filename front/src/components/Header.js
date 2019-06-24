@@ -88,7 +88,7 @@ export class Header extends React.Component {
       } contentStyle={{ margin: '8px 8px 0 75.5%', padding: '0', height: '97.1%', }}>
         <>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <ImagemPerfil obj={this.props.chatAtual} h={100} w={100} ehGrupo={this.props.ehGrupo}/>
+            <ImagemPerfil encoded={true} obj={this.props.chatAtual} h={100} w={100} ehGrupo={this.props.ehGrupo}/>
           </div>
           <h2 style={{ color: 'black', textAlign: 'center', background: 'whitesmoke' }}>
             {this.props.chatAtual.Nome}
@@ -98,7 +98,7 @@ export class Header extends React.Component {
             this.props.chatAtual.Usuarios.map(ua => (
               <div key={ua.ID} style={this.getUsuarioDivStyle()}>
                 <div style={{ display: 'flex' }}>
-                  <ImagemPerfil obj={ua} h={40} w={40} />
+                  <ImagemPerfil obj={ua} h={40} w={40} encoded={true} ehGrupo={this.props.ehGrupo} />
                   <span style={{ padding: '22px 15px 10px', color: 'black' }}>
                     {ua.ID === this.props.usuarioAtual.ID ? 'Você' : ua.Nome}
                   </span>

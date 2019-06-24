@@ -25,7 +25,7 @@ export class ListaUsuarios extends Component {
             ua.ID !== this.props.myID &&
             <div key={ua.ID} style={this.getUsuarioDivStyle()}>
               <div style={{ display: 'flex' }}>
-                <ImagemPerfil obj={ua} h={30} w={30} />
+                <ImagemPerfil obj={ua} h={30} w={30} encoded={true} />
                 <span style={{ padding: '10px 0 0 10px' }}>
                   {ua.Nome}
                 </span>

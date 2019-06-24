@@ -28,7 +28,7 @@ func Init(db *sql.DB) {
 	chatRoutes(chatController)
 	messageRoutes(msgController)
 
-	// schema.DropSchema(db) // método temporário para realizar testes
+	schema.DropSchema(db) // método temporário para realizar testes
 	schema.CreateSchema(db)
 }
 

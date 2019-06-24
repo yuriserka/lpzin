@@ -117,7 +117,7 @@ class App extends React.Component {
   }
 
   getUsuarioAtual = () => {
-    axios.get('/usuarios/2')
+    axios.get('/usuarios/1')
       .then(
         (res) => {
           this.setState({
