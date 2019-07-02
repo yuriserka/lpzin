@@ -52,12 +52,12 @@ export class CaixaEnvio extends React.Component {
 
   render() {
     if (this.props.chatAtual === null) {
-      return <div></div>
+      return <></>
     }
     const chat = this.props.chatAtual
     return (
       <div style={this.getContainerStyle()}>
-        <ImagemPerfil obj={this.props.usuarioAtual} encoded={true} />
+        <ImagemPerfil obj={this.props.usuarioAtual} encoded={true} ehGrupo={this.props.ehGrupo} />
         <div style={{ padding: '0px 20px 0 20px', height: '100%', width: '50%' }}>
           <div style={{ height: '60px' }}>
             <Input placeholder="Escreva uma mensagem..." autoFocus="autofocus"

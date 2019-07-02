@@ -42,9 +42,9 @@ export class InnerAddChatPopUp extends Component {
 
   getInnerStyle = () => {
     return {
-      height: '250px',
+      height: '300px',
       margin: '15px 10px',
-      background: 'red',
+      // background: 'red',
       padding: '15px',
       justifyContent: 'center',
     }

@@ -21,9 +21,10 @@ export class NovoChat extends Component {
       position: 'relative',
       width: '50%',
       background: 'lightgreen',
-      overflowY: 'scroll',
+      overflowY: 'auto',
       float: 'left',
-      zIndex: '9999'
+      zIndex: '9999',
+      borderRadius: '50px',
     }
   }
 
