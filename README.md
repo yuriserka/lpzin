@@ -22,27 +22,28 @@ Trabalho final da disciplina Linguagens de Programação do período 2019/1.
 
 ## Instruções de uso
 
-Pra rodar primeiro tem que clonar o repo e executar:
+Execute:
 
-> `cd ./front`
+> `$cd ./front`
 >
-> `npm install`
+> `$npm install`
 >
-> `yarn`
+> `$yarn`
 >
-> `yarn build`
+> `$yarn build`
 
-Isso fará com que instale as dependencia para o front funcionar:
+Isso fará com que instale as dependências para o front funcionar:
 
-> `npm start`
+> `$npm start`
 
-Roda o client-side, irá rodar na porta 3000, mas tem o proxy que redireciona para o servidor.
-essa config ta no package.json
+E rodar o client-side, será executada na porta 3000, porém existe o proxy que redireciona para o servidor.
 
-Para rodar o servidor precisa abrir outro terminal na pasta raíz e executar
+Essa configuração se encontra no _package.json_
 
-> `go build`
+Para rodar o servidor precisa abrir outro terminal na pasta raíz e executar:
+
+> `$go build`
 >
 > ./lpzin
 
-O servidor irá rodar na porta 8080.
+O servidor irá escutará na porta 8080.
