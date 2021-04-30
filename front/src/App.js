@@ -5,6 +5,10 @@ import CaixaEnvio from './components/CaixaEnvio';
 import Header from './components/Header';
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: 'http://localhost:8080'
+})
+
 class App extends React.Component {
   constructor() {
     super()
@@ -54,8 +58,8 @@ class App extends React.Component {
     const t = this.state.chats === null ? [] : this.state.chats
     t.push(chat)
 
-    axios.post('/chats', chat).then(
-      (res) => {
+    api.post('/chats', chat).then(
+      (_) => {
         this.setState({
           chats: t
         }, this.getChats)
@@ -66,7 +70,7 @@ class App extends React.Component {
 
   getChat = (IDchatClicado) => {
     const url = `/chats/${IDchatClicado}`
-    axios.get(url).then(
+    api.get(url).then(
       (res) => {
         this.setState({
           chatAtual: res.data
@@ -82,12 +86,12 @@ class App extends React.Component {
 
   addMensagem = (msg) => {
     const url = `/chats/${String(msg.ChatID)}/mensagens`
-    axios.post(url, {
+    api.post(url, {
       Conteudo: msg.Conteudo,
       AutorID: msg.AutorID,
     })
       .then(
-        (res) => {
+        (_) => {
           const { chats } = this.state
           const chatAlvo = chats.find(c => c.ID === msg.ChatID)
           chatAlvo.Mensagens.push(msg)
@@ -103,7 +107,7 @@ class App extends React.Component {
 
   getChats = () => {
     const url = `/usuarios/${this.state.usuarioAtual.ID}/chats`
-    axios.get(url).then(
+    api.get(url).then(
       (res) => {
         this.setState({
           chats: res.data,
@@ -116,12 +120,12 @@ class App extends React.Component {
     )
   }
 
-  getUsuarioAtual = () => {
-    axios.get('/usuarios/1')
+  getUsuarioAtual = async () => {
+    api.get('/usuarios/')
       .then(
         (res) => {
           this.setState({
-            usuarioAtual: res.data
+            usuarioAtual: res.data[0]
           }, this.getChats)
         },
         (error) => {
@@ -130,8 +134,8 @@ class App extends React.Component {
       )
   }
 
-  getUsuariosAtivos = () => {
-    axios.get('/usuarios')
+  getUsuariosAtivos = async () => {
+    api.get('/usuarios')
       .then(
         (res) => {
           this.setState({

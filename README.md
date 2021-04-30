@@ -26,19 +26,9 @@ Execute:
 
 > `$cd ./front`
 >
-> `$npm install`
->
 > `$yarn`
 >
 > `$yarn build`
-
-Isso fará com que instale as dependências para o front funcionar:
-
-> `$npm start`
-
-E rodar o client-side, será executada na porta 3000, porém existe o proxy que redireciona para o servidor.
-
-Essa configuração se encontra no _package.json_
 
 Para rodar o servidor precisa abrir outro terminal na pasta raíz e executar:
 
@@ -46,4 +36,4 @@ Para rodar o servidor precisa abrir outro terminal na pasta raíz e executar:
 >
 > ./lpzin
 
-O servidor irá escutará na porta 8080.
+A aplicação irá escutará na porta 8080.
